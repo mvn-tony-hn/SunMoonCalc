@@ -3,7 +3,7 @@
 //  MoonAndSunCalc
 //
 //  Created by TungNT2 on 5/16/13.
-//  Copyright (c) 2013 Duc Long. All rights reserved.
+// 
 //
 
 #import "SunMoonAnnotationView.h"
@@ -14,16 +14,16 @@
 @implementation SunMoonAnnotationView
 
 @synthesize moonSucCalc;
-@synthesize position,SunRiseSelect,dateCompute,annotationPoint,locationCompute;
+@synthesize position, sunRiseSelect, dateCompute, sunPoint,locationCompute;
 
 -(id)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier withDate:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng {
     self = [super init];
     if (self) {
         self.enabled = NO;
         locationCompute = [[CLLocation alloc]initWithLatitude:lat longitude:lng];
-        self.annotationPoint = annotation;
+        self.sunPoint = annotation;
         dateCompute = date;
-        SunRiseSelect = YES;
+        self.sunRiseSelect = YES;
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(didUpdateCoordinate:) name:@"UpdateCoordinate" object:nil];
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(didUpdateDate:) name:@"UpdateDate" object:nil];
         
@@ -42,34 +42,35 @@
 
 - (void)initContentView
 {
-    UIImage *moonRiseImage = [UIImage imageNamed:@"icon_moon_rise@2x.png"];
+    UIImage *moonRiseImage = [UIImage imageNamed:@"icon_moon_rise.png"];
     moonRiseImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointMoonRiseX - 25 , position.pointMoonRiseY - 32, 25, 32)];
     moonRiseImageView.image = moonRiseImage;
     [self addSubview:moonRiseImageView];
     
-    UIImage *moonSetImage = [UIImage imageNamed:@"icon_moon_set@2x.png"];
+    UIImage *moonSetImage = [UIImage imageNamed:@"icon_moon_set.png"];
     moonSetImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointMoonSetX, position.pointMoonSetY - 32, 25, 32)];
     moonSetImageView.image = moonSetImage;
     [self addSubview:moonSetImageView];
     
-    UIImage *moonPointImage = [UIImage imageNamed:@"icon_current_moon@2x.png"];
-    moonPointImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointMoonX, position.pointMoonY , 20, 20)];
-    moonPointImageView.image = moonPointImage;
-    [self addSubview:moonPointImageView];
+    UIImage *moonPosImage = [UIImage imageNamed:@"icon_current_moon.png"];
+    moonPosImageView = [[UIImageView alloc] initWithFrame:CGRectMake(position.pointMoonX, position.pointMoonY , 20, 20)];
+    moonPosImageView.image = moonPosImage;
+    [self addSubview:moonPosImageView];
     
     UIImage *sunRiseImage = [UIImage imageNamed:@"icon_sun_rise.png"];
     sunRiseImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointSunRiseX - 25 , position.pointSunRiseY - 20, 25, 32)];
     sunRiseImageView.image = sunRiseImage;
     [self addSubview:sunRiseImageView];
     
-    UIImage *sunSetImage = [UIImage imageNamed:@"icon_sun_set@2x.png"];
+    UIImage *sunSetImage = [UIImage imageNamed:@"icon_sun_set.png"];
     sunSetImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointSunSetX - 25 , position.pointSunSetY - 32, 25, 32)];
     sunSetImageView.image = sunSetImage;
     [self addSubview:sunSetImageView];
-    UIImage *sunPointImage = [UIImage imageNamed:@"icon_current_sun@2x.png"];
-    sunPointImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointSunX, position.pointSunY, 20, 20)];
-    sunPointImageView.image = sunPointImage;
-    [self addSubview:sunPointImageView];
+    
+    UIImage *sunPosImage = [UIImage imageNamed:@"icon_current_sun.png"];
+    sunPosImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointSunX, position.pointSunY, 20, 20)];
+    sunPosImageView.image = sunPosImage;
+    [self addSubview:sunPosImageView];
     
     self.frame = CGRectMake(0, 0, 205, 205);
     self.backgroundColor = [UIColor clearColor];
@@ -178,18 +179,18 @@
     }
     
     if (position.pointMoonX == 103 && position.pointMoonY == 103 ) {
-        moonPointImageView.hidden = YES;
+        moonPosImageView.hidden = YES;
     }
     else
     {
-        moonPointImageView.hidden = NO;
+        moonPosImageView.hidden = NO;
         newCenter.x = position.pointMoonX ;
         newCenter.y = position.pointMoonY ;
-        moonPointImageView.center = newCenter;
+        moonPosImageView.center = newCenter;
     }
     
     // set up for Sun
-    if (self.annotationPoint.HiddenSunRise == YES) {
+    if (self.sunPoint.isHiddenSunRise == YES) {
         position.pointSunRiseX = 103;
         position.pointSunRiseY = 103;
     }
@@ -205,7 +206,7 @@
     }
     
     
-    if (self.annotationPoint.HiddenSunSet == YES) {
+    if (self.sunPoint.isHiddenSunSet == YES) {
         position.pointSunSetX = 103;
         position.pointSunSetY = 103;
     }
@@ -221,19 +222,19 @@
     }
     
     
-    if (self.annotationPoint.HiddenSunPoint == YES) {
+    if (self.sunPoint.isHiddenSunPos == YES) {
         position.pointSunX = 103;
         position.pointSunY = 103;
     }
     if (position.pointSunX == 103 && position.pointSunY == 103 ) {
-        sunPointImageView.hidden = YES;
+        sunPosImageView.hidden = YES;
     }
     else
     {
-        sunPointImageView.hidden = NO;
+        sunPosImageView.hidden = NO;
         newCenter.x = position.pointSunX;
         newCenter.y = position.pointSunY;
-        sunPointImageView.center = newCenter;
+        sunPosImageView.center = newCenter;
     }
     [self setNeedsDisplay];
     

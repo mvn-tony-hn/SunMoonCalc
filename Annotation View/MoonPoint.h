@@ -9,13 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 
-@interface MoonPoint : NSObject
+@interface MoonPoint : NSObject <MKAnnotation>
 @property BOOL isHiddenMoonRise;
 @property BOOL isHiddenMoonSet;
 @property BOOL isHiddenMoonPos;
 
-@property (nonatomic, copy)NSString *name;
+@property (nonatomic, copy) NSString *name;
 @property (nonatomic, assign) CLLocationCoordinate2D coordinate;
 
--(id)initWithName:(NSString *)nameAnnotation  coordinate:(CLLocationCoordinate2D)coordinateAnnotation;
+- (id)initWithName:(NSString *)nameAnnotation coordinate:(CLLocationCoordinate2D)coordinateAnnotation;
 @end

@@ -12,7 +12,7 @@
 @synthesize name, coordinate, isHiddenMoonRise, isHiddenMoonPos, isHiddenMoonSet;
 
 -(id)initWithName:(NSString *)nameAnnotation  coordinate:(CLLocationCoordinate2D)coordinateAnnotation{
-    if (self=[super init]) {
+    if (self = [super init]) {
         self.name = nameAnnotation;
         self.coordinate = coordinateAnnotation;
     }
