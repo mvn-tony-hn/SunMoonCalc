@@ -16,8 +16,6 @@
     if (self) {
         self.frame = CGRectMake(0, 0, 38, 47);
         self.image = [UIImage imageNamed:@"icon_you_point.png"];
-//        self.youImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_you_point.png"]];
-//        [self addSubview:self.youImageView];
         self.mapView = mapView;
     }
     return self;
