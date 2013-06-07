@@ -1,17 +1,17 @@
 //
-//  YouAnnotation.m
+//  YouPointAnnotation.m
 //  Pashadelic
 //
 //  Created by TungNT2 on 5/22/13.
 //
 //
 
-#import "YouAnnotation.h"
+#import "CameraAnnotation.h"
 
-@implementation YouAnnotation
+@implementation CameraAnnotation
 
 - (id)initWithTitle:(NSString *)title coordinate:(CLLocationCoordinate2D)coordinate {
-    self = [super init];
+    self = [super initWithCoordinate:coordinate addressDictionary:nil];
     if (self) {
         self.title = title;
         self.coordinate = coordinate;

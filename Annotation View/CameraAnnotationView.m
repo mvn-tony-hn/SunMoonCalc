@@ -1,23 +1,43 @@
 //
-//  MapPinAnnotationView.m
+//  CameraAnnotationView.m
 //  Pashadelic
 //
-//  Created by TungNT2 on 5/17/13.
+//  Created by TungNT2 on 5/22/13.
 //
 //
 
-#import "MapPinAnnotationView.h"
-#import "MapPinAnnotation.h"
+#import "CameraAnnotationView.h"
+#import "CameraAnnotation.h"
 #import <QuartzCore/QuartzCore.h> // For CAAnimation
+//@implementation YouAnnotationView
 
-@interface MapPinAnnotationView ()
-@property (nonatomic, assign) BOOL isMoving;
+//-(id)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier mapView:(MKMapView *)mapView
+//{
+//    self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
+//    if (self) {
+//        self.frame = CGRectMake(0, 0, 38, 47);
+//        self.image = [UIImage imageNamed:@"icon_you_point.png"];
+//        self.mapView = mapView;
+//    }
+//    return self;
+//}
+
+//- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+//{
+//    UITouch *touch = [[event allTouches] anyObject];
+//    CGPoint touchPoint = [touch locationInView:self.superview];
+//    self.center = touchPoint;
+//    CLLocationCoordinate2D newCoordinate = [self.mapView convertPoint:touchPoint toCoordinateFromView:self.superview];
+//    CLLocation *newLocation = [[CLLocation alloc] initWithLatitude:newCoordinate.latitude longitude:newCoordinate.longitude];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"YouPointChangedNotifiaction" object:newLocation];
+//}
+@interface CameraAnnotationView ()
 @property (nonatomic, assign) CGPoint startLocation;
 @property (nonatomic, assign) CGPoint originalCenter;
 
-@property (nonatomic, retain) UIImageView *	pinShadow;
-@property (nonatomic, retain) NSTimer * pinTimer;
-@property (nonatomic, retain) MKMapView *mapView;
+@property (nonatomic, strong) UIImageView *	cameraShadow;
+@property (nonatomic, strong) UIImageView *pointImage;
+@property (nonatomic, strong) MKMapView *mapView;
 
 + (CAAnimation *)pinBounceAnimation_;
 + (CAAnimation *)pinFloatingAnimation_;
@@ -31,14 +51,12 @@
 - (void)pinAnnotationDidChangeToPoint:(CGPoint)point;
 @end
 
-@implementation MapPinAnnotationView
+@implementation CameraAnnotationView
 
 @synthesize mapView = _mapView;
-@synthesize isMoving = isMoving_;
-@synthesize startLocation = startLocation_;
-@synthesize originalCenter = originalCenter_;
-@synthesize pinShadow = pinShadow_;
-@synthesize pinTimer = pinTimer_;
+@synthesize startLocation = _startLocation;
+@synthesize originalCenter = _originalCenter;
+@synthesize cameraShadow = _cameraShadow;
 
 + (id)annotationViewWithAnnotation:(id <MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier mapView:(MKMapView *)mapView {
 	
@@ -48,17 +66,16 @@
 - (id)initWithAnnotation_:(id <MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier mapView:(MKMapView *)mapView {
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
 	if (self) {
-		self.image = [UIImage imageNamed:@"Pin.png"];
-		self.centerOffset = CGPointMake(8, -18);
+		self.image = [UIImage imageNamed:@"Camera.png"];
+		self.centerOffset = CGPointMake(5, -6);
 		
-		self.pinShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"PinShadow.png"]];
-		self.pinShadow.frame = CGRectMake(0, 0, 26, 25);
-		self.pinShadow.hidden = YES;
-		[self addSubview:self.pinShadow];
-		
+		self.cameraShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CameraShadow.png"]];
+		self.cameraShadow.frame = CGRectMake(0, 0, 33, 20);
+		self.cameraShadow.hidden = YES;
+		[self addSubview:self.cameraShadow];
+
 		self.mapView = mapView;
 	}
-	
 	return self;
 }
 
@@ -70,10 +87,7 @@
 	CAKeyframeAnimation *pinBounceAnimation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
 	
 	NSMutableArray *values = [NSMutableArray array];
-//	[values addObject:(id)[UIImage imageNamed:@"PinDown1.png"].CGImage];
-    [values addObject:(id)[UIImage imageNamed:@"Pin.png"].CGImage];
-//	[values addObject:(id)[UIImage imageNamed:@"PinDown2.png"].CGImage];
-//	[values addObject:(id)[UIImage imageNamed:@"PinDown3.png"].CGImage];
+    [values addObject:(id)[UIImage imageNamed:@"Camera.png"].CGImage];
 	
 	[pinBounceAnimation setValues:values];
 	pinBounceAnimation.duration = 0.1;
@@ -85,10 +99,7 @@
 	CAKeyframeAnimation *pinBounceAnimation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
 	
 	NSMutableArray *values = [NSMutableArray array];
-//	[values addObject:(id)[UIImage imageNamed:@"PinDown1.png"].CGImage];
-    [values addObject:(id)[UIImage imageNamed:@"Pin.png"].CGImage];
-    //	[values addObject:(id)[UIImage imageNamed:@"PinDown2.png"].CGImage];
-    //	[values addObject:(id)[UIImage imageNamed:@"PinDown3.png"].CGImage];
+    [values addObject:(id)[UIImage imageNamed:@"Camera.png"].CGImage];
 	
 	[pinBounceAnimation setValues:values];
 	pinBounceAnimation.duration = 0.2;
@@ -98,7 +109,7 @@
 	
 	CAKeyframeAnimation *pinFloatingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
 	
-	[pinFloatingAnimation setValues:[NSArray arrayWithObject:(id)[UIImage imageNamed:@"PinFloating.png"].CGImage]];
+	[pinFloatingAnimation setValues:[NSArray arrayWithObject:(id)[UIImage imageNamed:@"CameraFloating.png"].CGImage]];
 	pinFloatingAnimation.duration = 0.2;
 	
 	return pinFloatingAnimation;
@@ -108,7 +119,7 @@
 	
 	CAKeyframeAnimation *pinFloatingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
 	
-	[pinFloatingAnimation setValues:[NSArray arrayWithObject:(id)[UIImage imageNamed:@"PinFloating.png"].CGImage]];
+	[pinFloatingAnimation setValues:[NSArray arrayWithObject:(id)[UIImage imageNamed:@"CameraFloating.png"].CGImage]];
 	pinFloatingAnimation.duration = 0.3;
 	return pinFloatingAnimation;
 }
@@ -133,10 +144,10 @@
 
 + (CAAnimation *)liftForDraggingAnimation_ {
 	
-	CAAnimation *pinBounceAnimation = [MapPinAnnotationView pinBounceAnimation_];
-	CAAnimation *pinFloatingAnimation = [MapPinAnnotationView pinFloatingAnimation_];
+	CAAnimation *pinBounceAnimation = [CameraAnnotationView pinBounceAnimation_];
+	CAAnimation *pinFloatingAnimation = [CameraAnnotationView pinFloatingAnimation_];
 	pinFloatingAnimation.beginTime = pinBounceAnimation.duration;
-	CAAnimation *pinLiftAnimation = [MapPinAnnotationView pinLiftAnimation_];
+	CAAnimation *pinLiftAnimation = [CameraAnnotationView pinLiftAnimation_];
 	pinLiftAnimation.beginTime = pinBounceAnimation.duration;
 	
 	CAAnimationGroup *group = [CAAnimationGroup animation];
@@ -150,9 +161,9 @@
 
 + (CAAnimation *)liftAndDropAnimation_ {
 	
-	CAAnimation *pinLiftAndDropAnimation = [MapPinAnnotationView pinLiftDropAnimation_];
-	CAAnimation *pinFloatingAnimation = [MapPinAnnotationView pinFloatingDropAnimation_];
-	CAAnimation *pinBounceAnimation = [MapPinAnnotationView pinBounceDropAnimation_];
+	CAAnimation *pinLiftAndDropAnimation = [CameraAnnotationView pinLiftDropAnimation_];
+	CAAnimation *pinFloatingAnimation = [CameraAnnotationView pinFloatingDropAnimation_];
+	CAAnimation *pinBounceAnimation = [CameraAnnotationView pinBounceDropAnimation_];
 	pinBounceAnimation.beginTime = pinFloatingAnimation.duration;
 	
 	CAAnimationGroup *group = [CAAnimationGroup animation];
@@ -166,27 +177,27 @@
 #pragma mark UIView animation delegates
 
 - (void)shadowLiftWillStart_:(NSString *)animationID context:(void *)context {
-	self.pinShadow.hidden = NO;
+	self.cameraShadow.hidden = NO;
 }
 
 - (void)shadowDropDidStop_:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-	self.pinShadow.hidden = YES;
+	self.cameraShadow.hidden = YES;
 }
 
 #pragma mark NSTimer fire method
 
 - (void)resetPinPosition_:(NSTimer *)timer {
     
-    [self.layer addAnimation:[MapPinAnnotationView liftAndDropAnimation_] forKey:@"MapPinAnimation"];
+    [self.layer addAnimation:[CameraAnnotationView liftAndDropAnimation_] forKey:@"CameraAnimation"];
     
     // TODO: animation out-of-sync with self.layer
     [UIView beginAnimations:@"DDShadowLiftDropAnimation" context:NULL];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
     [UIView setAnimationDuration:0.1];
-    self.pinShadow.center = CGPointMake(90, -30);
-    self.pinShadow.center = CGPointMake(16.0, 19.5);
-    self.pinShadow.alpha = 0;
+    self.cameraShadow.center = CGPointMake(90, -30);
+    self.cameraShadow.center = CGPointMake(16.0, 19.5);
+    self.cameraShadow.alpha = 0;
     [UIView commitAnimations];
     
     // Update the map coordinate to reflect the new position.
@@ -194,16 +205,15 @@
     newCenter.x = self.center.x - self.centerOffset.x;
     newCenter.y = self.center.y - self.centerOffset.y;
     
-    MapPinAnnotation *theAnnotation = (MapPinAnnotation *)self.annotation;
+    CameraAnnotation *theAnnotation = (CameraAnnotation *)self.annotation;
     CLLocationCoordinate2D newCoordinate = [self.mapView convertPoint:newCenter toCoordinateFromView:self.superview];
     [theAnnotation setCoordinate:newCoordinate];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DDAnnotationCoordinateDidChangeNotification" object:theAnnotation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CameraAnnotationCoordinateDidChangeNotification" object:theAnnotation];
     
     // Clean up the state information.
     self.startLocation = CGPointZero;
     self.originalCenter = CGPointZero;
-    self.isMoving = NO;
 }
 
 - (void)pinAnnotationDidChangeToPoint:(CGPoint)point
@@ -216,7 +226,7 @@
     CLLocationCoordinate2D newCoordinate = [self.mapView convertPoint:newCenter toCoordinateFromView:self.superview];
     
     CLLocation *newLocation = [[CLLocation alloc] initWithLatitude:newCoordinate.latitude longitude:newCoordinate.longitude];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"MapPinAnnotationCenterDidChange" object:newLocation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CameraPinAnnotationCenterDidChange" object:newLocation];
 }
 #pragma mark -
 #pragma mark Handling events
@@ -225,14 +235,14 @@
 	if (self.mapView) {
 		[self.layer removeAllAnimations];
 		
-		[self.layer addAnimation:[MapPinAnnotationView liftForDraggingAnimation_] forKey:@"MapPinAnimation"];
+		[self.layer addAnimation:[CameraAnnotationView liftForDraggingAnimation_] forKey:@"CameraAnimation"];
 		
 		[UIView beginAnimations:@"DDShadowLiftAnimation" context:NULL];
 		[UIView setAnimationDelegate:self];
 		[UIView setAnimationWillStartSelector:@selector(shadowLiftWillStart_:context:)];
 		[UIView setAnimationDuration:0.2];
-		self.pinShadow.center = CGPointMake(80, -20);
-		self.pinShadow.alpha = 1;
+		self.cameraShadow.center = CGPointMake(80, -20);
+		self.cameraShadow.alpha = 1;
 		[UIView commitAnimations];
 	}
 	
@@ -247,7 +257,7 @@
 	CGPoint newCenter;
 	
 	// If dragging has begun, adjust the position of the view.
-	if (self.mapView /*&& self.isMoving*/) {
+	if (self.mapView) {
 		
 		newCenter.x = self.originalCenter.x + (newLocation.x - self.startLocation.x);
 		newCenter.y = self.originalCenter.y + (newLocation.y - self.startLocation.y);
@@ -263,25 +273,24 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	
 	if (self.mapView) {
-        [self.layer addAnimation:[MapPinAnnotationView liftAndDropAnimation_] forKey:@"MapPinAnimation"];
-			
+        [self.layer addAnimation:[CameraAnnotationView liftAndDropAnimation_] forKey:@"CameraAnimation"];
+        
         // TODO: animation out-of-sync with self.layer
         [UIView beginAnimations:@"DDShadowLiftDropAnimation" context:NULL];
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
         [UIView setAnimationDuration:0.2];
-        self.pinShadow.center = CGPointMake(90, -30);
-        self.pinShadow.center = CGPointMake(16.0, 19.5);
-        self.pinShadow.alpha = 0;
+        self.cameraShadow.center = CGPointMake(90, -30);
+        self.cameraShadow.center = CGPointMake(16.0, 19.5);
+        self.cameraShadow.alpha = 0;
         [UIView commitAnimations];
-			
-			// Update the map coordinate to reflect the new position.
+        
+        // Update the map coordinate to reflect the new position.
         [self pinAnnotationDidChangeToPoint:self.center];
-			
-			// Clean up the state information.
+        
+        // Clean up the state information.
         self.startLocation = CGPointZero;
         self.originalCenter = CGPointZero;
-        self.isMoving = NO;
 	} else {
 		[super touchesEnded:touches withEvent:event];
 	}
@@ -291,24 +300,23 @@
 	
 	if (self.mapView) {
 		// TODO: Currently no drop down effect but pin bounce only
-		[self.layer addAnimation:[MapPinAnnotationView pinBounceAnimation_] forKey:@"MapPinAnimation"];
+		[self.layer addAnimation:[CameraAnnotationView pinBounceAnimation_] forKey:@"CameraAnimation"];
 		
 		// TODO: animation out-of-sync with self.layer
 		[UIView beginAnimations:@"DDShadowDropAnimation" context:NULL];
 		[UIView setAnimationDelegate:self];
 		[UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
 		[UIView setAnimationDuration:0.1];
-		self.pinShadow.center = CGPointMake(16.0, 19.5);
-		self.pinShadow.alpha = 0;
+		self.cameraShadow.center = CGPointMake(16.0, 19.5);
+		self.cameraShadow.alpha = 0;
 		[UIView commitAnimations];
-			
+        
         // Move the view back to its starting point.
         self.center = self.originalCenter;
         [self pinAnnotationDidChangeToPoint:self.center];
-			// Clean up the state information.
+        // Clean up the state information.
         self.startLocation = CGPointZero;
         self.originalCenter = CGPointZero;
-        self.isMoving = NO;
 	} else {
 		[super touchesCancelled:touches withEvent:event];
 	}
@@ -318,4 +326,5 @@
 {
     [self.superview bringSubviewToFront:self];
 }
+
 @end

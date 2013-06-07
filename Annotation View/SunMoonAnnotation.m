@@ -7,6 +7,7 @@
 //
 
 #import "SunMoonAnnotation.h"
+#import "Globals.h"
 
 @implementation SunMoonAnnotation
 
@@ -16,6 +17,10 @@
     if (self) {
         self.title = title;
         self.coordinate = coordinate;
+        _isHiddenSunRise = kPDSunRiseHidden;
+        _isHiddenSunSet = kPDSunSetHidden;
+        _isHiddenMoonRise = kPDMoonRiseHidden;
+        _isHiddenMoonSet = kPDMoonSetHidden;
     }
     return self;
 }

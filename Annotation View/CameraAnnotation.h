@@ -1,5 +1,5 @@
 //
-//  YouAnnotation.h
+//  CameraAnnotation.h
 //  Pashadelic
 //
 //  Created by TungNT2 on 5/22/13.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 
-@interface YouAnnotation : NSObject <MKAnnotation>
+@interface CameraAnnotation : MKPlacemark
 
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign, readwrite) CLLocationCoordinate2D coordinate;

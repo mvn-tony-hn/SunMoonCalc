@@ -50,15 +50,6 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
 
 - (void)initContentView
 {
-//    UIImage *sunRiseImage = [UIImage imageNamed:@"icon_sun_rise.png"];
-//    sunRiseImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointSunRiseX - 25 , position.pointSunRiseY - 20, 25, 32)];
-//    sunRiseImageView.image = sunRiseImage;
-//    [self addSubview:sunRiseImageView];
-//    
-//    UIImage *sunSetImage = [UIImage imageNamed:@"icon_sun_set.png"];
-//    sunSetImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointSunSetX - 25 , position.pointSunSetY - 32, 25, 32)];
-//    sunSetImageView.image = sunSetImage;
-//    [self addSubview:sunSetImageView];
     UIImage *sunRiseImage = [UIImage imageNamed:@"icon_sun_rise.png"];
     sunRiseImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointSunRiseX, position.pointSunRiseY, 20, 20)];
     sunRiseImageView.image = sunRiseImage;
@@ -74,15 +65,6 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     sunPosImageView.image = sunPosImage;
     [self addSubview:sunPosImageView];
     
-//    UIImage *moonRiseImage = [UIImage imageNamed:@"icon_moon_rise.png"];
-//    moonRiseImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointMoonRiseX - 25, position.pointMoonRiseY - 32, 25, 32)];
-//    moonRiseImageView.image = moonRiseImage;
-//    [self addSubview:moonRiseImageView];
-//    
-//    UIImage *moonSetImage = [UIImage imageNamed:@"icon_moon_set.png"];
-//    moonSetImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointMoonSetX, position.pointMoonSetY - 32, 25, 32)];
-//    moonSetImageView.image = moonSetImage;
-//    [self addSubview:moonSetImageView];
     UIImage *moonRiseImage = [UIImage imageNamed:@"icon_moon_rise.png"];
     moonRiseImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position.pointMoonRiseX, position.pointMoonRiseY, 20, 20)];
     moonRiseImageView.image = moonRiseImage;
@@ -210,8 +192,6 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     else
     {
         moonRiseImageView.hidden = NO;
-//        newCenter.x = position.pointMoonRiseX - 12;
-//        newCenter.y = position.pointMoonRiseY - 16;
         newCenter.x = position.pointMoonRiseX;
         newCenter.y = position.pointMoonRiseY;
         moonRiseImageView.center = newCenter;
@@ -222,8 +202,6 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     else
     {
         moonSetImageView.hidden = NO;
-//        newCenter.x = position.pointMoonSetX + 12;
-//        newCenter.y = position.pointMoonSetY - 14;
         newCenter.x = position.pointMoonSetX;
         newCenter.y = position.pointMoonSetY;
         moonSetImageView.center = newCenter;
@@ -244,7 +222,6 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     if (self.sunMoonAnnotation.isHiddenSunRise == YES) {
         position.pointSunRiseX = 103;
         position.pointSunRiseY = 103;
-//        sunRiseImageView.hidden = YES;
     }
     if (position.pointSunRiseX == 103 && position.pointSunRiseY == 103 ) {
         sunRiseImageView.hidden = YES;
@@ -252,8 +229,6 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     else
     {
         sunRiseImageView.hidden = NO;
-//        newCenter.x = position.pointSunRiseX - 12;
-//        newCenter.y = position.pointSunRiseY - 16;
         newCenter.x = position.pointSunRiseX;
         newCenter.y = position.pointSunRiseY;
         sunRiseImageView.center = newCenter;
@@ -270,8 +245,6 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     else
     {
         sunSetImageView.hidden = NO;
-//        newCenter.x = position.pointSunSetX + 12;
-//        newCenter.y = position.pointSunSetY - 14;
         newCenter.x = position.pointSunSetX;
         newCenter.y = position.pointSunSetY;
         sunSetImageView.center = newCenter;
@@ -304,8 +277,6 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     else
     {
         moonRiseImageView.hidden = NO;
-//        newCenter.x = position.pointMoonRiseX - 12;
-//        newCenter.y = position.pointMoonRiseY - 16;
         newCenter.x = position.pointMoonRiseX;
         newCenter.y = position.pointMoonRiseY;
         moonRiseImageView.center = newCenter;
@@ -321,8 +292,6 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     else
     {
         moonSetImageView.hidden = NO;
-//        newCenter.x = position.pointMoonSetX + 12;
-//        newCenter.y = position.pointMoonSetY - 14;
         newCenter.x = position.pointMoonSetX;
         newCenter.y = position.pointMoonSetY;
         moonSetImageView.center = newCenter;
