@@ -7,7 +7,7 @@
 //
 
 #import <MapKit/MapKit.h>
-
+#define kPDPinAnnotationCenterDidChangeNotification     @"kPDPinAnnotationCenterDidChangeNotification"
 @interface MapPinAnnotationView : MKAnnotationView {
     @private
     MKMapView *_mapView;

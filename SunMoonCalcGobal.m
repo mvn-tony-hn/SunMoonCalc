@@ -1,19 +1,21 @@
 //
-//  MoonSunCalcGobal.m
-//  MoonAndSunCalc
+//  SunMoonCalcGobal.m
+//  SunMoonCalcGobal
 //
 //  Created by Duc Long on 4/11/13.
 //  Copyright (c) 2013 Duc Long. All rights reserved.
 //
 #import "SunCoordinate.h"
 #import "SunPosition.h"
-#import "MoonSunCalcGobal.h"
+#import "SunMoonCalcGobal.h"
 #import "MoonCoordinate.h"
 #import "MoonPosition.h"
+
 #define MoonSetSelected 0
 #define MoonRiseSelected 1
 #define SunSetSelected 3
 #define SunRiseSelected 4
+
 double DR = M_PI/180.0;
 double K1 = 15 * M_PI/180.0 * 1.0027379 ;
 double SkyM[3] = {0.0,0.0,0.0} ;
@@ -39,7 +41,7 @@ double Set_azS = 0.0;
 BOOL Sunrise = NO;
 BOOL SunSet = NO;
 
-@implementation MoonSunCalcGobal
+@implementation SunMoonCalcGobal
 @synthesize timeRiseSun,timeSetSun,timeRiseMoon,timeSetMoon;
 @synthesize positionEntity;
 - (id)init
@@ -114,7 +116,8 @@ BOOL SunSet = NO;
     double M = [self getSolarMeanAnomalyWithDayNumber:julianDay];
     double C = [self getEquationOfCenterWithSolarMean:M];
     double L = [self getEclipticLongitudeWithSolarMean:M andCenter:C];
-    SunCoordinate *coor = [[SunCoordinate alloc]initWithDeclination:[self getDeclinationWithLongitude:L andLatitude:0] andRightAscension:[self getRightAscensionWithLongitude:L andLatitude:0]];
+    SunCoordinate *coor = [[SunCoordinate alloc] initWithDeclination:[self getDeclinationWithLongitude:L andLatitude:0]
+                                                  andRightAscension:[self getRightAscensionWithLongitude:L andLatitude:0]];
     return coor;
 }
 
@@ -127,12 +130,13 @@ BOOL SunSet = NO;
     
     double H = [self getSiderealTimeWithDayNumber:d andObserverLongitude:lw] - c.rightAscension;
     
-    SunPosition *pos = [[SunPosition alloc]initWithAzimuth:[self getAzimuthWithHourAngle:H observerLatitude:phi andDeclination:c.declination] andAltitude:[self getAltitudeWithHourAngle:H observerLatitude:phi andDeclination:c.declination]];
+    SunPosition *pos = [[SunPosition alloc] initWithAzimuth:[self getAzimuthWithHourAngle:H observerLatitude:phi andDeclination:c.declination]
+                                                andAltitude:[self getAltitudeWithHourAngle:H observerLatitude:phi andDeclination:c.declination]];
     [self setSunPositionWithTime:pos withDate:date];
 
 }
 
-- (void) setSunPositionWithTime:(SunPosition *)sunPostion withDate:(NSDate *)date
+- (void)setSunPositionWithTime:(SunPosition *)sunPostion withDate:(NSDate *)date
 {
         if ((!Sunrise)&&(!SunSet))                 // neither sunrise nor sunset
         {
@@ -172,15 +176,15 @@ BOOL SunSet = NO;
 
 - (void)setSunPositionHidden
 {
-    positionEntity.pointSunX = 103;
-    positionEntity.pointSunY = 103;
+    positionEntity.pointSunX = centerAnnotationPoint;
+    positionEntity.pointSunY = centerAnnotationPoint;
 }
 
 - (void)showSunPosition :(float)azimuth withAltitude:(float)altitude
 {
     double angle =  azimuth - M_PI_2;
-    float x = 103 + 100 *cos(angle)*cos(altitude);
-    float y = 103 + 100 *sin(angle)*cos(altitude);
+    float x = centerAnnotationPoint + 100 *cos(angle)*cos(altitude);
+    float y = centerAnnotationPoint + 100 *sin(angle)*cos(altitude);
     positionEntity.pointSunX = x;
     positionEntity.pointSunY = y;
 
@@ -188,7 +192,7 @@ BOOL SunSet = NO;
 
 #pragma mark - get position Moon
 
--(MoonCoordinate *)getMoonCoords:(double)julianday { // geocentric ecliptic coordinates of the moon
+- (MoonCoordinate *)getMoonCoords:(double)julianday { // geocentric ecliptic coordinates of the moon
     
     double L = DR * (218.316 + 13.176396 * julianday), // ecliptic longitude
     M = DR * (134.963 + 13.064993 * julianday), // mean anomaly
@@ -197,11 +201,13 @@ BOOL SunSet = NO;
     l = L + DR * 6.289 * sin(M), // longitude
     b = DR * 5.128 * sin(F), // latitude
     dt = 385001 - 20905 * cos(M); // distance to the moon in km
-    MoonCoordinate *moonCoor = [[MoonCoordinate alloc]initWithDeclination:[self getDeclinationWithLongitude:l andLatitude:b] andRightAscension:[self getRightAscensionWithLongitude:l andLatitude:b] andDistance:dt];
+    MoonCoordinate *moonCoor = [[MoonCoordinate alloc] initWithDeclination:[self getDeclinationWithLongitude:l andLatitude:b]
+                                                         andRightAscension:[self getRightAscensionWithLongitude:l andLatitude:b]
+                                                               andDistance:dt];
     return moonCoor;
 }
 
-- (MoonPosition *) getMoonPositionWithDate:(NSDate*)date andLatitude:(double)lat andLongitude:(double)lng wihtBool:(BOOL)moonRiseBig{
+- (MoonPosition *)getMoonPositionWithDate:(NSDate*)date andLatitude:(double)lat andLongitude:(double)lng wihtBool:(BOOL)moonRiseBig{
 
     double lw = DR * -lng;
     double phi = DR * lat;
@@ -213,14 +219,16 @@ BOOL SunSet = NO;
     
     // altitude correction for refraction
     h = h + DR * 0.017 / tan(h + DR * 10.26 / (h + DR * 5.10));
-    MoonPosition *moonPos = [[MoonPosition alloc]initWithAzimuth:[self getAzimuthWithHourAngle:H observerLatitude:phi andDeclination:c.declination] andAltitude:h andDistance:c.distance];
+    MoonPosition *moonPos = [[MoonPosition alloc] initWithAzimuth:[self getAzimuthWithHourAngle:H observerLatitude:phi andDeclination:c.declination]
+                                                      andAltitude:h
+                                                      andDistance:c.distance];
 //    NSLog(@"azimuth = %f,altitude = %f,distance = %f",moonPos.azimuth,moonPos.altitude,moonPos.distance);
     [self setMoonPositionWithTime:moonPos withDate:date withbool:moonRiseBig];
     return moonPos;
 }
 
 
-- (void) setMoonPositionWithTime:(MoonPosition *)moonPostion withDate:(NSDate *)date withbool:(BOOL)moonRiseBig
+- (void)setMoonPositionWithTime:(MoonPosition *)moonPostion withDate:(NSDate *)date withbool:(BOOL)moonRiseBig
 {
     if ((!MoonRise)&&(!MoonSet))                 // neither sunrise nor sunset
     {
@@ -264,15 +272,15 @@ BOOL SunSet = NO;
 
 - (void)setMoonPositionHidden
 {
-    positionEntity.pointMoonX = 103;
-    positionEntity.pointMoonY = 103;
+    positionEntity.pointMoonX = centerAnnotationPoint;
+    positionEntity.pointMoonY = centerAnnotationPoint;
 }
 
-- (void)showMoonPosition :(float)azimuth withAltitude:(float)altitude
+- (void)showMoonPosition:(float)azimuth withAltitude:(float)altitude
 {
     double angle =  azimuth - M_PI_2;
-    float x = 103 + 100 *cos(angle)*cos(altitude);
-    float y = 103 + 100 *sin(angle)*cos(altitude);
+    float x = centerAnnotationPoint + 100 *cos(angle)*cos(altitude);
+    float y = centerAnnotationPoint + 100 *sin(angle)*cos(altitude);
     positionEntity.pointMoonX = x;
     positionEntity.pointMoonY = y;
 }
@@ -280,8 +288,8 @@ BOOL SunSet = NO;
 
 #pragma mark - compute point in Cricle 
 
-- (void)computePointInCricle:(float)azumith withRiseOrSet:(int)riseOrSet{
-
+- (void)computePointInCricle:(float)azumith withRiseOrSet:(int)riseOrSet
+{
         azumith = (azumith * M_PI )/ 180.0;
         float a = 0.0;
         if (0 <  azumith <= M_PI_2) {
@@ -295,7 +303,7 @@ BOOL SunSet = NO;
             a = tanf(azumith - 3 * M_PI_2);
         }
         
-        float b = 103 - 103 * a;
+        float b = centerAnnotationPoint - centerAnnotationPoint * a;
         float indexA = 1 + a * a;
         float indexB = 2 * a * b - 206 * a - 206 ;
         float indexC = b * b - 206 * b + 11218;
@@ -336,28 +344,28 @@ BOOL SunSet = NO;
     return x;
 }
 
-- (void) setSunRiseHidden
+- (void)setSunRiseHidden
 {
-    positionEntity.pointSunRiseX = 103;
-    positionEntity.pointSunRiseY = 103;
+    positionEntity.pointSunRiseX = centerAnnotationPoint;
+    positionEntity.pointSunRiseY = centerAnnotationPoint;
 }
 
-- (void) setSunSetHidden
+- (void)setSunSetHidden
 {
-    positionEntity.pointSunSetX = 103;
-    positionEntity.pointSunSetY = 103;
+    positionEntity.pointSunSetX = centerAnnotationPoint;
+    positionEntity.pointSunSetY = centerAnnotationPoint;
 }
 
-- (void) setMoonRiseHidden
+- (void)setMoonRiseHidden
 {
-    positionEntity.pointMoonRiseX = 103;
-    positionEntity.pointMoonRiseY = 103;
+    positionEntity.pointMoonRiseX = centerAnnotationPoint;
+    positionEntity.pointMoonRiseY = centerAnnotationPoint;
 }
 
-- (void) setMoonSetHidden
+- (void)setMoonSetHidden
 {
-    positionEntity.pointMoonSetX = 103;
-    positionEntity.pointMoonSetY = 103;
+    positionEntity.pointMoonSetX = centerAnnotationPoint;
+    positionEntity.pointMoonSetY = centerAnnotationPoint;
 }
 #pragma mark - compute moonrise and moon set
 
@@ -460,7 +468,7 @@ BOOL SunSet = NO;
 }
 
 
-- (double)test_moon :(double)k withZone:(double)zone witht0:(double)t0 withLat:(double)lat withPlx:(double)plx
+- (double)test_moon:(double)k withZone:(double)zone witht0:(double)t0 withLat:(double)lat withPlx:(double)plx
 {
     double ha[3] = {0.0, 0.0, 0.0};
     double a, b, c, d, e, s, z;
@@ -778,7 +786,7 @@ BOOL SunSet = NO;
 }
 
 
--(void) sun :(double)jd withCT:(double)ct
+- (void)sun:(double)jd withCT:(double)ct
 {
     double g, lo, s, u, v, w;
     

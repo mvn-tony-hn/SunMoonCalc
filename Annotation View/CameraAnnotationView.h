@@ -7,6 +7,7 @@
 //
 
 #import <MapKit/MapKit.h>
+#define kPDCameraAnnotationCenterDidChangeNotification  @"kPDCameraAnnotationCenterDidChangeNotification"
 
 @interface CameraAnnotationView : MKAnnotationView {
     @private

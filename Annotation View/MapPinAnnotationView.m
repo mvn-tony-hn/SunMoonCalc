@@ -216,7 +216,7 @@
     CLLocationCoordinate2D newCoordinate = [self.mapView convertPoint:newCenter toCoordinateFromView:self.superview];
     
     CLLocation *newLocation = [[CLLocation alloc] initWithLatitude:newCoordinate.latitude longitude:newCoordinate.longitude];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"MapPinAnnotationCenterDidChange" object:newLocation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidChangeNotification object:newLocation];
 }
 #pragma mark -
 #pragma mark Handling events
