@@ -55,7 +55,6 @@
 		self.pinShadow.frame = CGRectMake(0, 0, 26, 25);
 		self.pinShadow.hidden = YES;
 		[self addSubview:self.pinShadow];
-		liftPoint = CGPointMake(0.0, -29.0);
 		self.mapView = mapView;
 	}
 	
