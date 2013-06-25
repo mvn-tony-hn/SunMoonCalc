@@ -9,6 +9,7 @@
 #import "MapPinAnnotationView.h"
 #import "MapPinAnnotation.h"
 #import <QuartzCore/QuartzCore.h> // For CAAnimation
+#import "NSDictionary+Extra.h"
 
 @interface MapPinAnnotationView ()
 @property (nonatomic, assign) BOOL isMoving;
@@ -49,13 +50,12 @@
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
 	if (self) {
 		self.image = [UIImage imageNamed:@"Pin.png"];
-		self.centerOffset = CGPointMake(8, -18);
-		
+		self.centerOffset = CGPointMake(0, -2);
 		self.pinShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"PinShadow.png"]];
 		self.pinShadow.frame = CGRectMake(0, 0, 26, 25);
 		self.pinShadow.hidden = YES;
 		[self addSubview:self.pinShadow];
-		
+		liftPoint = CGPointMake(0.0, -29.0);
 		self.mapView = mapView;
 	}
 	
@@ -70,10 +70,7 @@
 	CAKeyframeAnimation *pinBounceAnimation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
 	
 	NSMutableArray *values = [NSMutableArray array];
-//	[values addObject:(id)[UIImage imageNamed:@"PinDown1.png"].CGImage];
     [values addObject:(id)[UIImage imageNamed:@"Pin.png"].CGImage];
-//	[values addObject:(id)[UIImage imageNamed:@"PinDown2.png"].CGImage];
-//	[values addObject:(id)[UIImage imageNamed:@"PinDown3.png"].CGImage];
 	
 	[pinBounceAnimation setValues:values];
 	pinBounceAnimation.duration = 0.1;
@@ -85,10 +82,7 @@
 	CAKeyframeAnimation *pinBounceAnimation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
 	
 	NSMutableArray *values = [NSMutableArray array];
-//	[values addObject:(id)[UIImage imageNamed:@"PinDown1.png"].CGImage];
     [values addObject:(id)[UIImage imageNamed:@"Pin.png"].CGImage];
-    //	[values addObject:(id)[UIImage imageNamed:@"PinDown2.png"].CGImage];
-    //	[values addObject:(id)[UIImage imageNamed:@"PinDown3.png"].CGImage];
 	
 	[pinBounceAnimation setValues:values];
 	pinBounceAnimation.duration = 0.2;
@@ -318,4 +312,5 @@
 {
     [self.superview bringSubviewToFront:self];
 }
+
 @end
