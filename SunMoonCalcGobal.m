@@ -88,8 +88,17 @@ BOOL SunSet = NO;
 - (double)J2000 {
     return 2451545;
 }
+
 - (double) toJulian:(NSDate*)date {
-    return (date.timeIntervalSince1970 )/ self.secondInDay - 0.5 + self.J1970;
+    NSString *JulianString = @"1970-01-01 00:00:00";
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    
+    NSDate *julianDate = [dateFormatter dateFromString:JulianString];
+    
+    NSTimeInterval differentBetweenDates = [date timeIntervalSinceDate:julianDate];
+    return differentBetweenDates/ self.secondInDay - 0.5 + self.J1970;
 }
 
 - (double)toDays:(NSDate*)date {
