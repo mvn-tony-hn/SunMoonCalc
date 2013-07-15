@@ -12,7 +12,6 @@
 #import "NSDictionary+Extra.h"
 
 @interface MapPinAnnotationView ()
-@property (nonatomic, assign) BOOL isMoving;
 @property (nonatomic, assign) CGPoint startLocation;
 @property (nonatomic, assign) CGPoint originalCenter;
 
@@ -35,7 +34,6 @@
 @implementation MapPinAnnotationView
 
 @synthesize mapView = _mapView;
-@synthesize isMoving = isMoving_;
 @synthesize startLocation = startLocation_;
 @synthesize originalCenter = originalCenter_;
 @synthesize pinShadow = pinShadow_;
@@ -206,7 +204,6 @@
     // Clean up the state information.
     self.startLocation = CGPointZero;
     self.originalCenter = CGPointZero;
-    self.isMoving = NO;
 }
 
 - (void)pinAnnotationDidChangeToPoint:(CGPoint)point
@@ -250,7 +247,7 @@
 	CGPoint newCenter;
 	
 	// If dragging has begun, adjust the position of the view.
-	if (self.mapView /*&& self.isMoving*/) {
+	if (self.mapView ) {
 		
 		newCenter.x = self.originalCenter.x + (newLocation.x - self.startLocation.x);
 		newCenter.y = self.originalCenter.y + (newLocation.y - self.startLocation.y);
@@ -307,6 +304,10 @@
             [UIView commitAnimations];
             self.startLocation = [recognizer locationInView:self.superview ];
             self.originalCenter = self.center;
+            CLLocationCoordinate2D newCoordinate = [self.mapView convertPoint:self.center toCoordinateFromView:self.superview];
+            
+            CLLocation *newLocation = [[CLLocation alloc] initWithLatitude:newCoordinate.latitude longitude:newCoordinate.longitude];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidUnlockNotification object:newLocation];
         }
         else
         {
@@ -322,16 +323,19 @@
             [UIView commitAnimations];
             
             // Move the view back to its starting point.
-            self.center = self.originalCenter;
             [self pinAnnotationDidChangeToPoint:self.center];
             // Clean up the state information.
             self.startLocation = CGPointZero;
             self.originalCenter = CGPointZero;
+    
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidLockNotification object:nil];
+
         }
-//        self.isMoving =! self.isMoving;
         self.mapPinAnnotation.allowMove =! self.mapPinAnnotation.allowMove;
 
     }
+
 
 }
 
@@ -369,7 +373,9 @@
 
 - (void)updateAnnotation:(MapPinAnnotation *)mapPinAnnotation
 {
-    self.isMoving =! self.mapPinAnnotation.allowMove;
+    [self.layer removeAllAnimations];
+    self.pinShadow.center = CGPointMake(16.0, 19.5);
+    self.pinShadow.hidden = YES;
     
 }
 

@@ -17,7 +17,6 @@
     @private
     MKMapView *_mapView;
     
-    BOOL _isMoving;
     CGPoint _startLocation;
     CGPoint _originalCenter;
     UIImageView *_pinShadow;
