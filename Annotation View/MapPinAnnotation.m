@@ -15,6 +15,7 @@
 	if (self = [super initWithCoordinate:coordinate addressDictionary:nil]) {
         self.title = title;
 		self.coordinate = coordinate;
+        self.allowMove = NO;
 	}
 	return self;
 }

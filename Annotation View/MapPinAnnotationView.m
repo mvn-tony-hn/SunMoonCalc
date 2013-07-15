@@ -46,9 +46,19 @@
 	return [[self alloc] initWithAnnotation_:annotation reuseIdentifier:reuseIdentifier mapView:mapView];
 }
 
-- (id)initWithAnnotation_:(id <MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier mapView:(MKMapView *)mapView {
+- (id)initWithAnnotation_:(id <MKAnnotation> )annotation reuseIdentifier:(NSString *)reuseIdentifier mapView:(MKMapView *)mapView {
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
 	if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(didUpdateHeading:)
+                                                     name:kPDDidUpdateHeading
+                                                   object:nil];
+        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc]
+                                                 initWithTarget:self action:@selector(didTapMapPin:)];
+        tapRecognizer.numberOfTapsRequired = 1;
+        [self addGestureRecognizer:tapRecognizer];
+        self.mapPinAnnotation = (MapPinAnnotation *)annotation;
+        
 		self.image = [UIImage imageNamed:@"Pin.png"];
 		self.centerOffset = CGPointMake(0, -2);
 		self.pinShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"PinShadow.png"]];
@@ -213,26 +223,26 @@
 }
 #pragma mark -
 #pragma mark Handling events
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	if (self.mapView) {
-		[self.layer removeAllAnimations];
-		
-		[self.layer addAnimation:[MapPinAnnotationView liftForDraggingAnimation_] forKey:@"MapPinAnimation"];
-		
-		[UIView beginAnimations:@"DDShadowLiftAnimation" context:NULL];
-		[UIView setAnimationDelegate:self];
-		[UIView setAnimationWillStartSelector:@selector(shadowLiftWillStart_:context:)];
-		[UIView setAnimationDuration:0.2];
-		self.pinShadow.center = CGPointMake(80, -20);
-		self.pinShadow.alpha = 1;
-		[UIView commitAnimations];
-	}
-	
-	// The view is configured for single touches only.
-	self.startLocation = [[touches anyObject] locationInView:self.superview];
-	self.originalCenter = self.center;
-}
+//
+//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+//	if (self.mapView) {
+//		[self.layer removeAllAnimations];
+//		
+//		[self.layer addAnimation:[MapPinAnnotationView liftForDraggingAnimation_] forKey:@"MapPinAnimation"];
+//		
+//		[UIView beginAnimations:@"DDShadowLiftAnimation" context:NULL];
+//		[UIView setAnimationDelegate:self];
+//		[UIView setAnimationWillStartSelector:@selector(shadowLiftWillStart_:context:)];
+//		[UIView setAnimationDuration:0.2];
+//		self.pinShadow.center = CGPointMake(80, -20);
+//		self.pinShadow.alpha = 1;
+//		[UIView commitAnimations];
+//	}
+//	
+//	// The view is configured for single touches only.
+//	self.startLocation = [[touches anyObject] locationInView:self.superview];
+//	self.originalCenter = self.center;
+//}
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	
@@ -252,64 +262,124 @@
 		[super touchesMoved:touches withEvent:event];
 	}
 }
+//
+//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+//	
+//	if (self.mapView) {
+//        [self.layer addAnimation:[MapPinAnnotationView liftAndDropAnimation_] forKey:@"MapPinAnimation"];
+//			
+//        // TODO: animation out-of-sync with self.layer
+//        [UIView beginAnimations:@"DDShadowLiftDropAnimation" context:NULL];
+//        [UIView setAnimationDelegate:self];
+//        [UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
+//        [UIView setAnimationDuration:0.2];
+//        self.pinShadow.center = CGPointMake(90, -30);
+//        self.pinShadow.center = CGPointMake(16.0, 19.5);
+//        self.pinShadow.alpha = 0;
+//        [UIView commitAnimations];
+//			
+//			// Update the map coordinate to reflect the new position.
+//        [self pinAnnotationDidChangeToPoint:self.center];
+//			
+//			// Clean up the state information.
+//        self.startLocation = CGPointZero;
+//        self.originalCenter = CGPointZero;
+//        self.isMoving = NO;
+//	} else {
+//		[super touchesEnded:touches withEvent:event];
+//	}
+//}
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	if (self.mapView) {
-        [self.layer addAnimation:[MapPinAnnotationView liftAndDropAnimation_] forKey:@"MapPinAnimation"];
-			
-        // TODO: animation out-of-sync with self.layer
-        [UIView beginAnimations:@"DDShadowLiftDropAnimation" context:NULL];
-        [UIView setAnimationDelegate:self];
-        [UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
-        [UIView setAnimationDuration:0.2];
-        self.pinShadow.center = CGPointMake(90, -30);
-        self.pinShadow.center = CGPointMake(16.0, 19.5);
-        self.pinShadow.alpha = 0;
-        [UIView commitAnimations];
-			
-			// Update the map coordinate to reflect the new position.
-        [self pinAnnotationDidChangeToPoint:self.center];
-			
-			// Clean up the state information.
-        self.startLocation = CGPointZero;
-        self.originalCenter = CGPointZero;
-        self.isMoving = NO;
-	} else {
-		[super touchesEnded:touches withEvent:event];
-	}
+- (void)didTapMapPin:(UIGestureRecognizer *)recognizer
+{
+    if (self.mapView) {
+        if (self.mapPinAnnotation.allowMove == NO) {
+            [self.layer removeAllAnimations];
+            
+            [self.layer addAnimation:[MapPinAnnotationView liftForDraggingAnimation_] forKey:@"MapPinAnimation"];
+            
+            [UIView beginAnimations:@"DDShadowLiftAnimation" context:NULL];
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationWillStartSelector:@selector(shadowLiftWillStart_:context:)];
+            [UIView setAnimationDuration:0.2];
+            self.pinShadow.center = CGPointMake(80, -20);
+            self.pinShadow.alpha = 1;
+            [UIView commitAnimations];
+            self.startLocation = [recognizer locationInView:self.superview ];
+            self.originalCenter = self.center;
+        }
+        else
+        {
+            [self.layer addAnimation:[MapPinAnnotationView pinBounceAnimation_] forKey:@"MapPinAnimation"];
+            
+            // TODO: animation out-of-sync with self.layer
+            [UIView beginAnimations:@"DDShadowDropAnimation" context:NULL];
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
+            [UIView setAnimationDuration:0.1];
+            self.pinShadow.center = CGPointMake(16.0, 19.5);
+            self.pinShadow.alpha = 0;
+            [UIView commitAnimations];
+            
+            // Move the view back to its starting point.
+            self.center = self.originalCenter;
+            [self pinAnnotationDidChangeToPoint:self.center];
+            // Clean up the state information.
+            self.startLocation = CGPointZero;
+            self.originalCenter = CGPointZero;
+        }
+//        self.isMoving =! self.isMoving;
+        self.mapPinAnnotation.allowMove =! self.mapPinAnnotation.allowMove;
+
+    }
+
 }
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	if (self.mapView) {
-		// TODO: Currently no drop down effect but pin bounce only
-		[self.layer addAnimation:[MapPinAnnotationView pinBounceAnimation_] forKey:@"MapPinAnimation"];
-		
-		// TODO: animation out-of-sync with self.layer
-		[UIView beginAnimations:@"DDShadowDropAnimation" context:NULL];
-		[UIView setAnimationDelegate:self];
-		[UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
-		[UIView setAnimationDuration:0.1];
-		self.pinShadow.center = CGPointMake(16.0, 19.5);
-		self.pinShadow.alpha = 0;
-		[UIView commitAnimations];
-			
-        // Move the view back to its starting point.
-        self.center = self.originalCenter;
-        [self pinAnnotationDidChangeToPoint:self.center];
-			// Clean up the state information.
-        self.startLocation = CGPointZero;
-        self.originalCenter = CGPointZero;
-        self.isMoving = NO;
-	} else {
-		[super touchesCancelled:touches withEvent:event];
-	}
-}
+//- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+//	
+//	if (self.mapView) {
+//		// TODO: Currently no drop down effect but pin bounce only
+//		[self.layer addAnimation:[MapPinAnnotationView pinBounceAnimation_] forKey:@"MapPinAnimation"];
+//		
+//		// TODO: animation out-of-sync with self.layer
+//		[UIView beginAnimations:@"DDShadowDropAnimation" context:NULL];
+//		[UIView setAnimationDelegate:self];
+//		[UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
+//		[UIView setAnimationDuration:0.1];
+//		self.pinShadow.center = CGPointMake(16.0, 19.5);
+//		self.pinShadow.alpha = 0;
+//		[UIView commitAnimations];
+//			
+//        // Move the view back to its starting point.
+//        self.center = self.originalCenter;
+//        [self pinAnnotationDidChangeToPoint:self.center];
+//			// Clean up the state information.
+//        self.startLocation = CGPointZero;
+//        self.originalCenter = CGPointZero;
+//        self.isMoving = NO;
+//	} else {
+//		[super touchesCancelled:touches withEvent:event];
+//	}
+//}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [self.superview bringSubviewToFront:self];
+}
+
+- (void)updateAnnotation:(MapPinAnnotation *)mapPinAnnotation
+{
+    self.isMoving =! self.mapPinAnnotation.allowMove;
+    
+}
+
+- (void)didUpdateHeading:(NSNotification *)notification
+{
+    NSDictionary *userInfo = notification.userInfo;
+    float newRad = [userInfo floatForKey:@"newRad"];
+ 
+    self.transform = CGAffineTransformMakeRotation(-newRad);
+    
 }
 
 @end

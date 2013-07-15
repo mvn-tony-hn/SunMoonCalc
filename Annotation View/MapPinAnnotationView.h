@@ -7,7 +7,12 @@
 //
 
 #import <MapKit/MapKit.h>
+#import "MapPinAnnotation.h"
+#import "Globals.h"
+
 #define kPDPinAnnotationCenterDidChangeNotification     @"kPDPinAnnotationCenterDidChangeNotification"
+#define kPDPinAnnotationCenterDidUnlockNotification     @"kPDPinAnnotationCenterDidUnlockNotification"
+#define kPDPinAnnotationCenterDidLockNotification       @"kPDPinAnnotationCenterDidLockNotification"
 @interface MapPinAnnotationView : MKAnnotationView {
     @private
     MKMapView *_mapView;
@@ -19,4 +24,8 @@
     NSTimer *_pinTimer;
 }
 + (id)annotationViewWithAnnotation:(id <MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier mapView:(MKMapView *)mapView;
+- (void)updateAnnotation:(MapPinAnnotation *)mapPinAnnotation;
+@property (nonatomic, strong) MapPinAnnotation *mapPinAnnotation;
+
+
 @end
