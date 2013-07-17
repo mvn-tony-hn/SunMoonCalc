@@ -213,6 +213,8 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	if (self.mapView) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCameraDidTochesBeganNotification object:nil];
+        
 		[self.layer removeAllAnimations];
 		
 		[self.layer addAnimation:[CameraAnnotationView liftForDraggingAnimation_] forKey:@"CameraAnimation"];
@@ -253,6 +255,9 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	
 	if (self.mapView) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCameraDidTochesEndNotification object:nil];
+
         [self.layer addAnimation:[CameraAnnotationView liftAndDropAnimation_] forKey:@"CameraAnimation"];
         
         // TODO: animation out-of-sync with self.layer
@@ -277,8 +282,9 @@
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-	
 	if (self.mapView) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCameraDidTochesEndNotification object:nil];
+
 		// TODO: Currently no drop down effect but pin bounce only
 		[self.layer addAnimation:[CameraAnnotationView pinBounceAnimation_] forKey:@"CameraAnimation"];
 		
@@ -291,9 +297,7 @@
 		self.cameraShadow.alpha = 0;
 		[UIView commitAnimations];
         
-        // Move the view back to its starting point.
-        self.center = self.originalCenter;
-        [self pinAnnotationDidChangeToPoint:self.center];
+
         // Clean up the state information.
         self.startLocation = CGPointZero;
         self.originalCenter = CGPointZero;

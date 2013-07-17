@@ -10,9 +10,8 @@
 #import "MapPinAnnotation.h"
 #import "Globals.h"
 
-#define kPDPinAnnotationCenterDidChangeNotification     @"kPDPinAnnotationCenterDidChangeNotification"
-#define kPDPinAnnotationCenterDidUnlockNotification     @"kPDPinAnnotationCenterDidUnlockNotification"
-#define kPDPinAnnotationCenterDidLockNotification       @"kPDPinAnnotationCenterDidLockNotification"
+
+
 @interface MapPinAnnotationView : MKAnnotationView {
     @private
     MKMapView *_mapView;
@@ -21,6 +20,8 @@
     CGPoint _originalCenter;
     UIImageView *_pinShadow;
     NSTimer *_pinTimer;
+    BOOL DidTouchesBegan;
+
 }
 + (id)annotationViewWithAnnotation:(id <MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier mapView:(MKMapView *)mapView;
 - (void)updateAnnotation:(MapPinAnnotation *)mapPinAnnotation;
