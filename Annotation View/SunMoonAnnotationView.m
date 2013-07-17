@@ -30,6 +30,7 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
                                                  selector:@selector(didUpdateCoordinate:)
                                                      name:kPDUpdateSunMoonAnnotationNotification
                                                    object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateHeading:) name:kPDDidUpdateHeading object:nil];
 //        [[NSNotificationCenter defaultCenter] addObserver:self
 //                                                 selector:@selector(didUpdateSunMoonOption:)
 //                                                     name:@"PDSunMoonOptionChangedNotification"
@@ -299,5 +300,13 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     
     [self setNeedsDisplay];
 }
-
+//- (void)didUpdateHeading:(NSNotification *)notification
+//{
+//    NSDictionary *userInfo = notification.userInfo;
+//    
+//    float newRad = [[userInfo objectForKey:@"newRad"]floatValue];
+//    
+//    self.transform = CGAffineTransformMakeRotation(newRad);
+//    
+//}
 @end

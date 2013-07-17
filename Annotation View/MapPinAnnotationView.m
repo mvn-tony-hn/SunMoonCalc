@@ -47,10 +47,15 @@
 - (id)initWithAnnotation_:(id <MKAnnotation> )annotation reuseIdentifier:(NSString *)reuseIdentifier mapView:(MKMapView *)mapView {
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
 	if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(didUpdateHeading:)
-                                                     name:kPDDidUpdateHeading
-                                                   object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self
+//                                                 selector:@selector(didUpdateHeading:)
+//                                                     name:kPDDidUpdateHeading
+//                                                   object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self
+//                                                 selector:@selector(didStopRotationMap:)
+//                                                     name:kPDDidStopRotationMap
+//                                                   object:nil];
+ 
         UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc]
                                                  initWithTarget:self action:@selector(didTapMapPin:)];
         tapRecognizer.numberOfTapsRequired = 1;
@@ -226,7 +231,7 @@
     if (self.mapPinAnnotation.allowMove == YES) {
         if (self.mapView) {
             DidTouchesBegan = YES;
-            NSLog(@"touche began");
+//            NSLog(@"touche began");
             
             [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidTochesBeganNotification object:nil];
             self.startLocation = [[touches anyObject] locationInView:self.superview];
@@ -267,7 +272,7 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if ((self.mapPinAnnotation.allowMove == YES) && (DidTouchesBegan == YES)) {
         if (self.mapView) {
-            NSLog(@"touches end");
+//            NSLog(@"touches end");
             [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidTochesEndNotification object:nil];
             
         } else {
@@ -337,7 +342,7 @@
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     if ((self.mapPinAnnotation.allowMove == YES) && (DidTouchesBegan == YES)) {
         if (self.mapView) {
-            NSLog(@"toches cancel");
+//            NSLog(@"toches cancel");
             // TODO: Currently no drop down effect but pin bounce only
             [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidTochesEndNotification object:nil];
             self.startLocation = CGPointZero;
@@ -361,7 +366,6 @@
     [self.layer removeAllAnimations];
     self.pinShadow.center = CGPointMake(16.0, 19.5);
     self.pinShadow.hidden = YES;
-    self.transform = CGAffineTransformMakeRotation(self.mapPinAnnotation.rotateAngle);
     
 }
 
@@ -372,6 +376,19 @@
  
     self.transform = CGAffineTransformMakeRotation(-newRad);
     
+}
+
+- (void)didStopRotationMap:(NSNotification *)notification
+{
+    NSNumber *angleNumber = (NSNumber *)[notification object];
+    float rotationAngle = [angleNumber floatValue];
+
+    self.transform = CGAffineTransformMakeRotation(-rotationAngle);
+}
+
+- (void)dealloc
+{
+
 }
 
 @end
