@@ -13,5 +13,6 @@
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, assign, readwrite) CLLocationCoordinate2D coordinate;
 @property BOOL allowMove;
+@property float rotateAngle;
 - (id)initWithTitle:(NSString *)title coordinate:(CLLocationCoordinate2D)coordinate;
 @end

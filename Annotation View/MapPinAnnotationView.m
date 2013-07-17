@@ -361,6 +361,7 @@
     [self.layer removeAllAnimations];
     self.pinShadow.center = CGPointMake(16.0, 19.5);
     self.pinShadow.hidden = YES;
+    self.transform = CGAffineTransformMakeRotation(self.mapPinAnnotation.rotateAngle);
     
 }
 

@@ -16,6 +16,7 @@
         self.title = title;
 		self.coordinate = coordinate;
         self.allowMove = NO;
+        self.rotateAngle = 0.0f;
 	}
 	return self;
 }
