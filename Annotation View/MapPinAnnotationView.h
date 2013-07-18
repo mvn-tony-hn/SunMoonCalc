@@ -21,6 +21,7 @@
     UIImageView *_pinShadow;
     NSTimer *_pinTimer;
     BOOL DidTouchesBegan;
+    float rotationAngle;
 
 }
 + (id)annotationViewWithAnnotation:(id <MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier mapView:(MKMapView *)mapView;

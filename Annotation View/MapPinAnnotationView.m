@@ -47,14 +47,6 @@
 - (id)initWithAnnotation_:(id <MKAnnotation> )annotation reuseIdentifier:(NSString *)reuseIdentifier mapView:(MKMapView *)mapView {
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
 	if (self) {
-//        [[NSNotificationCenter defaultCenter] addObserver:self
-//                                                 selector:@selector(didUpdateHeading:)
-//                                                     name:kPDDidUpdateHeading
-//                                                   object:nil];
-//        [[NSNotificationCenter defaultCenter] addObserver:self
-//                                                 selector:@selector(didStopRotationMap:)
-//                                                     name:kPDDidStopRotationMap
-//                                                   object:nil];
  
         UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc]
                                                  initWithTarget:self action:@selector(didTapMapPin:)];
@@ -69,6 +61,7 @@
 		self.pinShadow.hidden = YES;
 		[self addSubview:self.pinShadow];
 		self.mapView = mapView;
+
 	}
 	
 	return self;
@@ -97,7 +90,7 @@
     [values addObject:(id)[UIImage imageNamed:@"Pin.png"].CGImage];
 	
 	[pinBounceAnimation setValues:values];
-	pinBounceAnimation.duration = 0.2;
+	pinBounceAnimation.duration = 0.1;
 	return pinBounceAnimation;
 }
 + (CAAnimation *)pinFloatingAnimation_ {
@@ -105,7 +98,7 @@
 	CAKeyframeAnimation *pinFloatingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
 	
 	[pinFloatingAnimation setValues:[NSArray arrayWithObject:(id)[UIImage imageNamed:@"PinFloating.png"].CGImage]];
-	pinFloatingAnimation.duration = 0.1;
+	pinFloatingAnimation.duration = 0.2;
 	
 	return pinFloatingAnimation;
 }
@@ -115,7 +108,7 @@
 	CAKeyframeAnimation *pinFloatingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
 	
 	[pinFloatingAnimation setValues:[NSArray arrayWithObject:(id)[UIImage imageNamed:@"PinFloating.png"].CGImage]];
-	pinFloatingAnimation.duration = 0.1;
+	pinFloatingAnimation.duration = 0.2;
 	return pinFloatingAnimation;
 }
 
@@ -123,8 +116,8 @@
 	
 	CABasicAnimation *liftAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
 	
-	liftAnimation.byValue = [NSValue valueWithCGPoint:CGPointMake(0.0, -29.0)];
-	liftAnimation.duration = 0.2;
+	liftAnimation.byValue = [NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)];
+	liftAnimation.duration = 0.3;
 	return liftAnimation;
 }
 
@@ -132,7 +125,7 @@
 	
 	CABasicAnimation *liftAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
     
-	liftAnimation.byValue = [NSValue valueWithCGPoint:CGPointMake(0.0, -15.0)];
+	liftAnimation.byValue = [NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)];
     liftAnimation.duration = 0.3;
 	return liftAnimation;
 }
@@ -295,11 +288,6 @@
             [UIView commitAnimations];
             self.startLocation = [recognizer locationInView:self.superview ];
             self.originalCenter = self.center;
-//            CLLocationCoordinate2D newCoordinate = [self.mapView convertPoint:self.center toCoordinateFromView:self.superview];
-//            
-//            CLLocation *newLocation = [[CLLocation alloc] initWithLatitude:newCoordinate.latitude longitude:newCoordinate.longitude];
-//            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidUnlockNotification object:newLocation];
-            
 
         }
         else
@@ -322,8 +310,6 @@
             self.originalCenter = CGPointZero;
 
             [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidTochesEndNotification object:nil];
-//
-//            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidLockNotification object:nil];
 
         }
         self.mapPinAnnotation.allowMove =! self.mapPinAnnotation.allowMove;
@@ -362,22 +348,6 @@
     
 }
 
-- (void)didUpdateHeading:(NSNotification *)notification
-{
-    NSDictionary *userInfo = notification.userInfo;
-    float newRad = [userInfo floatForKey:@"newRad"];
- 
-    self.transform = CGAffineTransformMakeRotation(-newRad);
-    
-}
-
-- (void)didStopRotationMap:(NSNotification *)notification
-{
-    NSNumber *angleNumber = (NSNumber *)[notification object];
-    float rotationAngle = [angleNumber floatValue];
-
-    self.transform = CGAffineTransformMakeRotation(-rotationAngle);
-}
 
 - (void)dealloc
 {
