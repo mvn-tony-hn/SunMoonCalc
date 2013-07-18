@@ -61,6 +61,8 @@
 		self.pinShadow.hidden = YES;
 		[self addSubview:self.pinShadow];
 		self.mapView = mapView;
+        self.pinShadow.center = CGPointMake(40.0, 40.0);
+
 
 	}
 	
@@ -184,7 +186,7 @@
     [UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
     [UIView setAnimationDuration:0.1];
     self.pinShadow.center = CGPointMake(90, -30);
-    self.pinShadow.center = CGPointMake(16.0, 19.5);
+    self.pinShadow.center = CGPointMake(45.0, 40.0);
     self.pinShadow.alpha = 0;
     [UIView commitAnimations];
     
@@ -283,7 +285,8 @@
             [UIView setAnimationDelegate:self];
             [UIView setAnimationWillStartSelector:@selector(shadowLiftWillStart_:context:)];
             [UIView setAnimationDuration:0.2];
-            self.pinShadow.center = CGPointMake(80, -20);
+            NSLog(@"frame : %@",NSStringFromCGPoint(self.pinShadow.center));
+            self.pinShadow.center = CGPointMake(60, 5);
             self.pinShadow.alpha = 1;
             [UIView commitAnimations];
             self.startLocation = [recognizer locationInView:self.superview ];
@@ -301,7 +304,7 @@
             [UIView setAnimationDelegate:self];
             [UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
             [UIView setAnimationDuration:0.1];
-            self.pinShadow.center = CGPointMake(16.0, 19.5);
+            self.pinShadow.center = CGPointMake(45.0, 40.0);
             self.pinShadow.alpha = 0;
             [UIView commitAnimations];
             
@@ -343,7 +346,7 @@
 - (void)updateAnnotation:(MapPinAnnotation *)mapPinAnnotation
 {
     [self.layer removeAllAnimations];
-    self.pinShadow.center = CGPointMake(16.0, 19.5);
+    self.pinShadow.center = CGPointMake(45.0, 40.0);
     self.pinShadow.hidden = YES;
     
 }
