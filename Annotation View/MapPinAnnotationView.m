@@ -105,7 +105,7 @@
 	CAKeyframeAnimation *pinFloatingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
 	
 	[pinFloatingAnimation setValues:[NSArray arrayWithObject:(id)[UIImage imageNamed:@"PinFloating.png"].CGImage]];
-	pinFloatingAnimation.duration = 0.2;
+	pinFloatingAnimation.duration = 0.1;
 	
 	return pinFloatingAnimation;
 }
@@ -115,7 +115,7 @@
 	CAKeyframeAnimation *pinFloatingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
 	
 	[pinFloatingAnimation setValues:[NSArray arrayWithObject:(id)[UIImage imageNamed:@"PinFloating.png"].CGImage]];
-	pinFloatingAnimation.duration = 0.3;
+	pinFloatingAnimation.duration = 0.1;
 	return pinFloatingAnimation;
 }
 
@@ -230,12 +230,8 @@
 
     if (self.mapPinAnnotation.allowMove == YES) {
         if (self.mapView) {
-            DidTouchesBegan = YES;
-//            NSLog(@"touche began");
-            
+            DidTouchesBegan = YES;            
             [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidTochesBeganNotification object:nil];
-            self.startLocation = [[touches anyObject] locationInView:self.superview];
-            self.originalCenter = self.center;
             
         }else {
             // Let the parent class handle it.
@@ -272,7 +268,6 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if ((self.mapPinAnnotation.allowMove == YES) && (DidTouchesBegan == YES)) {
         if (self.mapView) {
-//            NSLog(@"touches end");
             [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidTochesEndNotification object:nil];
             
         } else {
@@ -300,12 +295,11 @@
             [UIView commitAnimations];
             self.startLocation = [recognizer locationInView:self.superview ];
             self.originalCenter = self.center;
-            CLLocationCoordinate2D newCoordinate = [self.mapView convertPoint:self.center toCoordinateFromView:self.superview];
+//            CLLocationCoordinate2D newCoordinate = [self.mapView convertPoint:self.center toCoordinateFromView:self.superview];
+//            
+//            CLLocation *newLocation = [[CLLocation alloc] initWithLatitude:newCoordinate.latitude longitude:newCoordinate.longitude];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidUnlockNotification object:newLocation];
             
-            CLLocation *newLocation = [[CLLocation alloc] initWithLatitude:newCoordinate.latitude longitude:newCoordinate.longitude];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidUnlockNotification object:newLocation];
-            
-//            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidTochesBeganNotification object:nil];
 
         }
         else
@@ -326,10 +320,10 @@
             // Clean up the state information.
             self.startLocation = CGPointZero;
             self.originalCenter = CGPointZero;
-    
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidTochesEndNotification object:nil];
 
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidLockNotification object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidTochesEndNotification object:nil];
+//
+//            [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidLockNotification object:nil];
 
         }
         self.mapPinAnnotation.allowMove =! self.mapPinAnnotation.allowMove;
@@ -342,7 +336,6 @@
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     if ((self.mapPinAnnotation.allowMove == YES) && (DidTouchesBegan == YES)) {
         if (self.mapView) {
-//            NSLog(@"toches cancel");
             // TODO: Currently no drop down effect but pin bounce only
             [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCenterDidTochesEndNotification object:nil];
             self.startLocation = CGPointZero;
