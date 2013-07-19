@@ -278,14 +278,12 @@
     if (self.mapView) {
         if (self.mapPinAnnotation.allowMove == NO) {
             [self.layer removeAllAnimations];
-            
             [self.layer addAnimation:[MapPinAnnotationView liftForDraggingAnimation_] forKey:@"MapPinAnimation"];
             
             [UIView beginAnimations:@"DDShadowLiftAnimation" context:NULL];
             [UIView setAnimationDelegate:self];
             [UIView setAnimationWillStartSelector:@selector(shadowLiftWillStart_:context:)];
             [UIView setAnimationDuration:0.2];
-            NSLog(@"frame : %@",NSStringFromCGPoint(self.pinShadow.center));
             self.pinShadow.center = CGPointMake(60, 5);
             self.pinShadow.alpha = 1;
             [UIView commitAnimations];
@@ -295,6 +293,7 @@
         }
         else
         {
+
             DidTouchesBegan = NO;
 
             [self.layer addAnimation:[MapPinAnnotationView pinBounceAnimation_] forKey:@"MapPinAnimation"];
