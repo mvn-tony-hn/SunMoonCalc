@@ -20,6 +20,7 @@
 @property (nonatomic, strong) PositionEntity *positionEntity;
 - (void)computeMoonriseAndMoonSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng;
 - (void)computeSunriseAndSunSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng;
+- (NSDictionary*)getSunTimesWithDate:(NSDate*)date andLatitude:(double)lat andLogitude:(double)lng ;
 
 
 @end

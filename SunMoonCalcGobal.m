@@ -118,7 +118,83 @@ BOOL SunSet = NO;
 - (double)getAltitudeWithHourAngle:(double)H observerLatitude:(double)phi andDeclination:(double)dec {
     return asin(sin(phi)*sin(dec) + cos(phi)*cos(dec)*cos(H));
 }
+- (double)J0 {
+    return 0.0009;
+}
+- (NSDate *) fromJulian:(double)j {
+    double timeInterval = (j+ 0.5 - self.J1970) * [self secondInDay];
+    
+    NSDate * date = [[NSDate alloc]initWithTimeIntervalSince1970:timeInterval];
+    return date;
+}
 
+- (double)getJulianCycleWithDayNumber:(double)d andObserverLongitude:(double)lw {
+    return round(d-self.J0-lw/(2*M_PI));
+}
+
+- (double)getApproxTransitWithHourAngle:(double)Ht andObserverLongitude:(double)lw andJulianCycle:(double)n {
+    return self.J0 + (Ht + lw)/(2*M_PI) + n;
+}
+- (double)getSolarTransitJWithApproxTransit:(double)ds andSolarMeanTime:(double)M andEclipticLongitude:(double)L {
+    return self.J2000 + ds + 0.0053*sin(M) - 0.0069 * sin(2*L);
+}
+
+- (double)getHourAngleWithAltitude:(double)h andObserverLatitude:(double)phi andDeclination:(double)d {
+    return acos((sin(h) - sin(phi)*sin(d))/(cos(phi) *cos(d)));
+}
+
+- (NSMutableArray*)times {
+    NSMutableArray *times = [[NSMutableArray alloc]init ];
+    NSArray *temp;
+    temp = [[NSArray alloc]initWithObjects: @"-0.83",@"sunrise",@"sunset", nil ];
+    [times addObject:temp];
+    temp = [[NSArray alloc]initWithObjects:@"-0.3",@"sunriseEnd", @"sunsetStart", nil];
+    [times addObject:temp];
+    temp = [[NSArray alloc]initWithObjects:@"-6",@"dawn",@"dusk", nil];
+    [times addObject:temp];
+    temp = [[NSArray alloc]initWithObjects:@"-12",@"nauticalDawn",@"nauticalDusk", nil];
+    [times addObject:temp];
+    temp = [[NSArray alloc]initWithObjects:@"-18",@"nightEnd",@"night", nil ];
+    [times addObject:temp];
+    temp = [[NSArray alloc]initWithObjects:@"6",@"goldenHourEnd",@"goldenHour", nil];
+    [times addObject:temp];
+    return times;
+}
+
+
+# pragma mark - get Sun Time
+- (NSDictionary*)getSunTimesWithDate:(NSDate*)date andLatitude:(double)lat andLogitude:(double)lng {
+    double lw = DR * -lng;
+    double phi = DR * lat;
+    double d = [self toDays:date];
+    double n = [self getJulianCycleWithDayNumber:d andObserverLongitude:lw];
+    double ds = [self getApproxTransitWithHourAngle:0 andObserverLongitude:lw andJulianCycle:n];
+    
+    double M = [self getSolarMeanAnomalyWithDayNumber:ds];
+    double C = [self getEquationOfCenterWithSolarMean:M];
+    double L = [self getEclipticLongitudeWithSolarMean:M andCenter:C];
+    
+    double dec = [self getDeclinationWithLongitude:L andLatitude:0];
+    double Jnoon = [self getSolarTransitJWithApproxTransit:ds andSolarMeanTime:M andEclipticLongitude:L];
+    
+    NSMutableDictionary *sunTimes = [[NSMutableDictionary alloc]init ];
+    
+    [sunTimes setValue:[self fromJulian:Jnoon] forKey:@"solarNoon"];
+    [sunTimes setValue:[self fromJulian:(Jnoon-0.05)] forKey:@"nadir"];
+    NSArray *time = [[NSArray alloc]init ];
+    for(int i = 0 ;i < [self times].count;i++) {
+        time = [[self times]objectAtIndex:i];
+        double temp = [[time objectAtIndex:0] doubleValue] * DR;
+        double w = [self getHourAngleWithAltitude:temp andObserverLatitude:phi andDeclination:dec];
+        double a = [self getApproxTransitWithHourAngle:w andObserverLongitude:lw andJulianCycle:n];
+        double Jset = [self getSolarTransitJWithApproxTransit:a andSolarMeanTime:M andEclipticLongitude:L];
+        double Jrise = Jnoon - (Jset - Jnoon);
+        [sunTimes setValue:[self convertDate:[self fromJulian:Jrise]] forKey:[NSString stringWithFormat:@"%@",[time objectAtIndex:1]]];
+        [sunTimes setValue:[self convertDate:[self fromJulian:Jset]] forKey:[NSString stringWithFormat:@"%@",[time objectAtIndex:2]]];
+        
+    }
+    return sunTimes;
+}
 #pragma mark - getposition Sun
 
 - (SunCoordinate*)getSunCoordsWithDayNumber:(double)julianDay {
@@ -907,19 +983,17 @@ BOOL SunSet = NO;
     NSString *yearString = [dfYear stringFromDate:date];
     return yearString;
 }
--(NSString *)conVertDateToStringHour:(NSDate *)date
-{
-    NSDateFormatter *dfHour = [[NSDateFormatter alloc]init];
-    [dfHour setDateFormat:@"HH"];
-    NSString *hourString = [dfHour stringFromDate:date];
-    return hourString;
-}
--(NSString *)conVertDateToStringMinute:(NSDate *)date
-{
-    NSDateFormatter *dfMunite = [[NSDateFormatter alloc]init];
-    [dfMunite setDateFormat:@"mm"];
-    NSString *minuteString = [dfMunite stringFromDate:date];
-    return minuteString;
-}
 
+- (NSDate*)convertDate:(NSDate*)sourceDate {
+    
+    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
+    
+    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:sourceDate];
+    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:sourceDate];
+    NSTimeInterval interval = destinationGMTOffset - sourceGMTOffset;
+    
+    NSDate* destinationDate = [[NSDate alloc] initWithTimeInterval:interval sinceDate:sourceDate];
+    return destinationDate;
+}
 @end
