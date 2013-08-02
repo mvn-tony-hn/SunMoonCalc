@@ -273,7 +273,6 @@
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
         [UIView setAnimationDuration:0.2];
-        self.pinShadow.center = CGPointMake(90, -30);
         self.pinShadow.center = CGPointMake(45.0, 40.0);
         self.pinShadow.alpha = 0;
         [UIView commitAnimations];
@@ -303,7 +302,7 @@
 		[UIView setAnimationDelegate:self];
 		[UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
 		[UIView setAnimationDuration:0.1];
-		self.pinShadow.center = CGPointMake(16.0, 19.5);
+		self.pinShadow.center = CGPointMake(45.0, 40.0);
 		self.pinShadow.alpha = 0;
 		[UIView commitAnimations];
         
