@@ -10,17 +10,13 @@
 #import "MapPinAnnotation.h"
 #import "Globals.h"
 
-
-
 @interface MapPinAnnotationView : MKAnnotationView {
     @private
     MKMapView *_mapView;
-    
     CGPoint _startLocation;
     CGPoint _originalCenter;
     UIImageView *_pinShadow;
     NSTimer *_pinTimer;
-    BOOL DidTouchesBegan;
     float rotationAngle;
 
 }

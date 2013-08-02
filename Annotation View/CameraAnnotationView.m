@@ -163,37 +163,37 @@
 }
 
 #pragma mark NSTimer fire method
-//
-//- (void)resetPinPosition_:(NSTimer *)timer {
-//    
-//    [self.layer addAnimation:[CameraAnnotationView liftAndDropAnimation_] forKey:@"CameraAnimation"];
-//    
-//    // TODO: animation out-of-sync with self.layer
-//    [UIView beginAnimations:@"DDShadowLiftDropAnimation" context:NULL];
-//    [UIView setAnimationDelegate:self];
-//    [UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
-//    [UIView setAnimationDuration:0.1];
-//    self.cameraShadow.center = CGPointMake(90, -30);
-//    self.cameraShadow.center = CGPointMake(16.0, 19.5);
-//    self.cameraShadow.alpha = 0;
-//    [UIView commitAnimations];
-//    
-//    // Update the map coordinate to reflect the new position.
-//    CGPoint newCenter;
-//    newCenter.x = self.center.x - self.centerOffset.x;
-//    newCenter.y = self.center.y - self.centerOffset.y;
-//    
-//    CameraAnnotation *theAnnotation = (CameraAnnotation *)self.annotation;
-//    CLLocationCoordinate2D newCoordinate = [self.mapView convertPoint:newCenter toCoordinateFromView:self.superview];
-//    [theAnnotation setCoordinate:newCoordinate];
-//    
-//    [[NSNotificationCenter defaultCenter] postNotificationName:kPDCameraAnnotationCenterDidChangeNotification
-//                                                        object:theAnnotation];
-//    
-//    // Clean up the state information.
-//    self.startLocation = CGPointZero;
-//    self.originalCenter = CGPointZero;
-//}
+
+- (void)resetPinPosition_:(NSTimer *)timer {
+    
+    [self.layer addAnimation:[CameraAnnotationView liftAndDropAnimation_] forKey:@"CameraAnimation"];
+    
+    // TODO: animation out-of-sync with self.layer
+    [UIView beginAnimations:@"DDShadowLiftDropAnimation" context:NULL];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(shadowDropDidStop_:finished:context:)];
+    [UIView setAnimationDuration:0.1];
+    self.cameraShadow.center = CGPointMake(90, -30);
+    self.cameraShadow.center = CGPointMake(16.0, 19.5);
+    self.cameraShadow.alpha = 0;
+    [UIView commitAnimations];
+    
+    // Update the map coordinate to reflect the new position.
+    CGPoint newCenter;
+    newCenter.x = self.center.x - self.centerOffset.x;
+    newCenter.y = self.center.y - self.centerOffset.y;
+    
+    CameraAnnotation *theAnnotation = (CameraAnnotation *)self.annotation;
+    CLLocationCoordinate2D newCoordinate = [self.mapView convertPoint:newCenter toCoordinateFromView:self.superview];
+    [theAnnotation setCoordinate:newCoordinate];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPDCameraAnnotationCenterDidChangeNotification
+                                                        object:theAnnotation];
+    
+    // Clean up the state information.
+    self.startLocation = CGPointZero;
+    self.originalCenter = CGPointZero;
+}
 
 - (void)pinAnnotationDidChangeToPoint:(CGPoint)point
 {
