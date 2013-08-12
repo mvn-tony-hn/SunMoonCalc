@@ -213,7 +213,6 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	if (self.mapView) {
    
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPDDidTouchesBeganOnMapPinNotification object:nil];
             
         [[NSNotificationCenter defaultCenter] postNotificationName:kPDPinAnnotationCameraDidTochesBeganNotification object:nil];
         
