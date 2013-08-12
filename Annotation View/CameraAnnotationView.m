@@ -46,7 +46,7 @@
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
 	if (self) {
 		self.image = [UIImage imageNamed:@"Camera.png"];
-		self.centerOffset = CGPointMake(5, -6);
+		self.centerOffset = CGPointMake(2, -6);
 		
 		self.cameraShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CameraShadow.png"]];
 		self.cameraShadow.frame = CGRectMake(0, 0, 33, 20);
