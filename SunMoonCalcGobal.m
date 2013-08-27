@@ -169,13 +169,11 @@ BOOL SunSet = NO;
     double d = [self toDays:date];
     MoonCoordinate *moonCoordinate = [self getMoonCoords:d];
     SunCoordinate *sunCoordinate = [self getSunCoordsWithDayNumber:d];
-
-    
-    double sdist = 149598000;// distance from Earth to Sun in km
-    double phi = cos(sin(sunCoordinate.declination) * sin(moonCoordinate.declination) + cos(sunCoordinate.declination) * cos(moonCoordinate.declination) * cos(sunCoordinate.rightAscension - moonCoordinate.rightAscension));
+    double sdist = 149598000.0;// distance from Earth to Sun in km
+    double phi = acos(sin(sunCoordinate.declination) * sin(moonCoordinate.declination) + cos(sunCoordinate.declination) * cos(moonCoordinate.declination) * cos(sunCoordinate.rightAscension - moonCoordinate.rightAscension));
     double inc = atan2(sdist * sin(phi), moonCoordinate.distance - sdist * cos(phi));
     
-    return (1 + cos(inc)) / 2;
+    return (1 + cos(inc)) / 2.0f;
 }
 
 # pragma mark - get Sun Time

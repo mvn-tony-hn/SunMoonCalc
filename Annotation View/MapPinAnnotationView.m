@@ -48,10 +48,6 @@
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
 	if (self) {
  
-//        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc]
-//                                                 initWithTarget:self action:@selector(didTapMapPin:)];
-//        tapRecognizer.numberOfTapsRequired = 1;
-//        [self addGestureRecognizer:tapRecognizer];
         self.mapPinAnnotation = (MapPinAnnotation *)annotation;
         
 		self.image = [UIImage imageNamed:@"Pin.png"];

@@ -38,22 +38,9 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
         sunMoonCalc = [[SunMoonCalcGobal alloc] init];
         [sunMoonCalc computeMoonriseAndMoonSet:date withLatitude:lat withLongitude:lng];
         [sunMoonCalc computeSunriseAndSunSet:date withLatitude:lat withLongitude:lng];
-//        NSDictionary *sunTimes = [[NSDictionary alloc]init];
-//        
-//        sunTimes = [sunMoonCalc getSunTimesWithDate:date andLatitude:lat
-//                                        andLogitude:lng];
-//        NSDate *riseTime = (NSDate*)[sunTimes objectForKey:@"sunrise"];
-//        NSDate *setTime = (NSDate*)[sunTimes objectForKey:@"sunset"];
-//        NSDate *night = (NSDate*)[sunTimes objectForKey:@"night"];
-//        NSDate *goldenHour = (NSDate *)[sunTimes objectForKey:@"goldenHour"];
-//        NSDate *goldenHourEnd = (NSDate *)[sunTimes objectForKey:@"goldenHourEnd"];
-//        
-//        
-//        NSLog(@"rise = %@",riseTime);
-//        NSLog(@"set = %@",setTime);
-//        NSLog(@"night = %@",night);
-//        NSLog(@"golden Hour : %@",goldenHour);
-//        NSLog(@"golden Hour : %@",goldenHourEnd);
+//        NSDate *dateNow = [NSDate date];
+//
+//        double fraction = [sunMoonCalc getMoonFraction:dateNow];
 
         position = sunMoonCalc.positionEntity;
         [self initContentView];
