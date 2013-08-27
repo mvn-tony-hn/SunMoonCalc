@@ -162,6 +162,22 @@ BOOL SunSet = NO;
 }
 
 
+#pragma mark - get Moon Fraction
+
+- (double)getMoonFraction:(NSDate *)date
+{
+    double d = [self toDays:date];
+    MoonCoordinate *moonCoordinate = [self getMoonCoords:d];
+    SunCoordinate *sunCoordinate = [self getSunCoordsWithDayNumber:d];
+
+    
+    double sdist = 149598000;// distance from Earth to Sun in km
+    double phi = cos(sin(sunCoordinate.declination) * sin(moonCoordinate.declination) + cos(sunCoordinate.declination) * cos(moonCoordinate.declination) * cos(sunCoordinate.rightAscension - moonCoordinate.rightAscension));
+    double inc = atan2(sdist * sin(phi), moonCoordinate.distance - sdist * cos(phi));
+    
+    return (1 + cos(inc)) / 2;
+}
+
 # pragma mark - get Sun Time
 - (NSDictionary*)getSunTimesWithDate:(NSDate*)date andLatitude:(double)lat andLogitude:(double)lng {
     double lw = DR * -lng;
