@@ -371,12 +371,15 @@ BOOL SunSet = NO;
 
 - (void)setMoonPositionHidden
 {
+    _currentHaveMoon = NO;
     positionEntity.pointMoonX = centerAnnotationPoint;
     positionEntity.pointMoonY = centerAnnotationPoint;
 }
 
 - (void)showMoonPosition:(float)azimuth withAltitude:(float)altitude
 {
+    _currentHaveMoon = YES;
+
     double angle =  azimuth - M_PI_2;
     float x = centerAnnotationPoint + 100 *cos(angle)*cos(altitude);
     float y = centerAnnotationPoint + 100 *sin(angle)*cos(altitude);
