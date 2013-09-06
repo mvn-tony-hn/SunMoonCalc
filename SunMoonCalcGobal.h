@@ -18,6 +18,8 @@
 @property (nonatomic, strong) NSDate *timeSetSun;
 @property (nonatomic ,strong) NSDate *timeRiseMoon;
 @property (nonatomic, strong) NSDate *timeSetMoon;
+@property BOOL MoonRise ;
+@property BOOL MoonSet ;
 @property (nonatomic, strong) PositionEntity *positionEntity;
 - (void)computeMoonriseAndMoonSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng;
 - (void)computeSunriseAndSunSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng;

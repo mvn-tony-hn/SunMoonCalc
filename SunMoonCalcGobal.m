@@ -26,8 +26,7 @@ int Rise_timeM[2] = {0 , 0};
 int Set_timeM[2] = {0,0};
 double Rise_azM = 0.0;
 double Set_azM = 0.0;
-BOOL MoonRise ;
-BOOL MoonSet ;
+
 
 double SkyS[3] = {0.0,0.0,0.0} ;
 double RAnS[3] = {0.0,0.0,0.0};
@@ -44,6 +43,7 @@ BOOL SunSet = NO;
 @implementation SunMoonCalcGobal
 @synthesize timeRiseSun,timeSetSun,timeRiseMoon,timeSetMoon;
 @synthesize positionEntity;
+@synthesize MoonRise,MoonSet;
 - (id)init
 {
     self = [super init];
@@ -472,6 +472,7 @@ BOOL SunSet = NO;
 #pragma mark - compute moonrise and moon set
 
 - (void)computeMoonriseAndMoonSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng{
+    [self conVertDateToStringMonthName:date];
     Rise_azM = 0.0;
     Set_azM = 0.0;
     Rise_timeM[0] = 0.0;
@@ -1000,6 +1001,15 @@ BOOL SunSet = NO;
     NSString *yearString = [dfYear stringFromDate:date];
     return yearString;
 }
+-(NSString *)conVertDateToStringMonthName:(NSDate *)date
+{
+    NSDateFormatter *dfMonth = [[NSDateFormatter alloc]init];
+    [dfMonth setDateFormat:@"MMMM"];
+    NSString *monthString = [[dfMonth stringFromDate:date] capitalizedString];
+    NSLog(@"month String : %@",monthString);
+    return monthString;
+}
+
 
 - (NSDate*)convertDate:(NSDate*)sourceDate {
     
