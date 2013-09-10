@@ -148,32 +148,17 @@ BOOL SunSet = NO;
     NSArray *temp;
     temp = [[NSArray alloc]initWithObjects: @"-0.83",@"sunrise",@"sunset", nil ];
     [times addObject:temp];
-    temp = [[NSArray alloc]initWithObjects:@"-0.3",@"sunriseEnd", @"sunsetStart", nil];
-    [times addObject:temp];
-    temp = [[NSArray alloc]initWithObjects:@"-6",@"dawn",@"dusk", nil];
-    [times addObject:temp];
-    temp = [[NSArray alloc]initWithObjects:@"-12",@"nauticalDawn",@"nauticalDusk", nil];
-    [times addObject:temp];
-    temp = [[NSArray alloc]initWithObjects:@"-18",@"nightEnd",@"night", nil ];
-    [times addObject:temp];
+//    temp = [[NSArray alloc]initWithObjects:@"-0.3",@"sunriseEnd", @"sunsetStart", nil];
+//    [times addObject:temp];
+//    temp = [[NSArray alloc]initWithObjects:@"-6",@"dawn",@"dusk", nil];
+//    [times addObject:temp];
+//    temp = [[NSArray alloc]initWithObjects:@"-12",@"nauticalDawn",@"nauticalDusk", nil];
+//    [times addObject:temp];
+//    temp = [[NSArray alloc]initWithObjects:@"-18",@"nightEnd",@"night", nil ];
+//    [times addObject:temp];
     temp = [[NSArray alloc]initWithObjects:@"6",@"goldenHourEnd",@"goldenHour", nil];
     [times addObject:temp];
     return times;
-}
-
-
-#pragma mark - get Moon Fraction
-
-- (double)getMoonFraction:(NSDate *)date
-{
-    double d = [self toDays:date];
-    MoonCoordinate *moonCoordinate = [self getMoonCoords:d];
-    SunCoordinate *sunCoordinate = [self getSunCoordsWithDayNumber:d];
-    double sdist = 149598000.0;// distance from Earth to Sun in km
-    double phi = acos(sin(sunCoordinate.declination) * sin(moonCoordinate.declination) + cos(sunCoordinate.declination) * cos(moonCoordinate.declination) * cos(sunCoordinate.rightAscension - moonCoordinate.rightAscension));
-    double inc = atan2(sdist * sin(phi), moonCoordinate.distance - sdist * cos(phi));
-    
-    return (1 + cos(inc)) / 2.0f;
 }
 
 # pragma mark - get Sun Time
@@ -203,11 +188,25 @@ BOOL SunSet = NO;
         double a = [self getApproxTransitWithHourAngle:w andObserverLongitude:lw andJulianCycle:n];
         double Jset = [self getSolarTransitJWithApproxTransit:a andSolarMeanTime:M andEclipticLongitude:L];
         double Jrise = Jnoon - (Jset - Jnoon);
-        [sunTimes setValue:[self convertDate:[self fromJulian:Jrise]] forKey:[NSString stringWithFormat:@"%@",[time objectAtIndex:1]]];
-        [sunTimes setValue:[self convertDate:[self fromJulian:Jset]] forKey:[NSString stringWithFormat:@"%@",[time objectAtIndex:2]]];
+        [sunTimes setValue:[self fromJulian:Jrise] forKey:[NSString stringWithFormat:@"%@",[time objectAtIndex:1]]];
+        [sunTimes setValue:[self fromJulian:Jset]  forKey:[NSString stringWithFormat:@"%@",[time objectAtIndex:2]]];
         
     }
     return sunTimes;
+}
+
+#pragma mark - get Moon Fraction
+
+- (double)getMoonFraction:(NSDate *)date
+{
+    double d = [self toDays:date];
+    MoonCoordinate *moonCoordinate = [self getMoonCoords:d];
+    SunCoordinate *sunCoordinate = [self getSunCoordsWithDayNumber:d];
+    double sdist = 149598000.0;// distance from Earth to Sun in km
+    double phi = acos(sin(sunCoordinate.declination) * sin(moonCoordinate.declination) + cos(sunCoordinate.declination) * cos(moonCoordinate.declination) * cos(sunCoordinate.rightAscension - moonCoordinate.rightAscension));
+    double inc = atan2(sdist * sin(phi), moonCoordinate.distance - sdist * cos(phi));
+    
+    return (1 + cos(inc)) / 2.0f;
 }
 #pragma mark - getposition Sun
 
@@ -726,7 +725,6 @@ BOOL SunSet = NO;
 
 - (void)computeSunriseAndSunSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng
 {
-//    NSLog(@"date : %@, lat = %f, long = %f",date,lat,lng);
     Rise_azS = 0.0;
     Set_azS = 0.0;
     Rise_timeS[0] = 0.0;
@@ -978,6 +976,22 @@ BOOL SunSet = NO;
 
 #pragma mark - get date now
 
+-(NSString *)conVertDateToStringMinute:(NSDate *)date
+{
+    NSDateFormatter *dfMinute = [[NSDateFormatter alloc]init];
+    [dfMinute setDateFormat:@"HH"];
+    NSString *minuteString = [dfMinute stringFromDate:date];
+    return minuteString;
+}
+
+-(NSString *)conVertDateToStringHour:(NSDate *)date
+{
+    NSDateFormatter *dfHour = [[NSDateFormatter alloc]init];
+    [dfHour setDateFormat:@"HH"];
+    NSString *hourString = [dfHour stringFromDate:date];
+    return hourString;
+}
+
 -(NSString *)conVertDateToStringDay:(NSDate *)date
 {
     NSDateFormatter *dfDay = [[NSDateFormatter alloc]init];
@@ -1006,21 +1020,9 @@ BOOL SunSet = NO;
     NSDateFormatter *dfMonth = [[NSDateFormatter alloc]init];
     [dfMonth setDateFormat:@"MMMM"];
     NSString *monthString = [[dfMonth stringFromDate:date] capitalizedString];
-    NSLog(@"month String : %@",monthString);
+    monthString = [monthString substringToIndex:3];
     return monthString;
 }
 
 
-- (NSDate*)convertDate:(NSDate*)sourceDate {
-    
-    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
-    
-    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:sourceDate];
-    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:sourceDate];
-    NSTimeInterval interval = destinationGMTOffset - sourceGMTOffset;
-    
-    NSDate* destinationDate = [[NSDate alloc] initWithTimeInterval:interval sinceDate:sourceDate];
-    return destinationDate;
-}
 @end
