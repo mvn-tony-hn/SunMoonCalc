@@ -26,6 +26,8 @@
 - (NSDictionary*)getSunTimesWithDate:(NSDate*)date andLatitude:(double)lat andLogitude:(double)lng ;
 - (double)getMoonFraction:(NSDate *)date;
 -(NSString *)conVertDateToStringMonthName:(NSDate *)date;
+-(NSString *)conVertDateToStringDayOfWeekName:(NSDate *)date;
+
 -(NSString *)conVertDateToStringDay:(NSDate *)date;
 -(NSString *)conVertDateToStringMinute:(NSDate *)date;
 -(NSString *)conVertDateToStringHour:(NSDate *)date;

@@ -148,14 +148,14 @@ BOOL SunSet = NO;
     NSArray *temp;
     temp = [[NSArray alloc]initWithObjects: @"-0.83",@"sunrise",@"sunset", nil ];
     [times addObject:temp];
-//    temp = [[NSArray alloc]initWithObjects:@"-0.3",@"sunriseEnd", @"sunsetStart", nil];
-//    [times addObject:temp];
-//    temp = [[NSArray alloc]initWithObjects:@"-6",@"dawn",@"dusk", nil];
-//    [times addObject:temp];
-//    temp = [[NSArray alloc]initWithObjects:@"-12",@"nauticalDawn",@"nauticalDusk", nil];
-//    [times addObject:temp];
-//    temp = [[NSArray alloc]initWithObjects:@"-18",@"nightEnd",@"night", nil ];
-//    [times addObject:temp];
+    temp = [[NSArray alloc]initWithObjects:@"-0.3",@"sunriseEnd", @"sunsetStart", nil];
+    [times addObject:temp];
+    temp = [[NSArray alloc]initWithObjects:@"-6",@"dawn",@"dusk", nil];
+    [times addObject:temp];
+    temp = [[NSArray alloc]initWithObjects:@"-12",@"nauticalDawn",@"nauticalDusk", nil];
+    [times addObject:temp];
+    temp = [[NSArray alloc]initWithObjects:@"-18",@"nightEnd",@"night", nil ];
+    [times addObject:temp];
     temp = [[NSArray alloc]initWithObjects:@"6",@"goldenHourEnd",@"goldenHour", nil];
     [times addObject:temp];
     return times;
@@ -1022,6 +1022,14 @@ BOOL SunSet = NO;
     NSString *monthString = [[dfMonth stringFromDate:date] capitalizedString];
     monthString = [monthString substringToIndex:3];
     return monthString;
+}
+-(NSString *)conVertDateToStringDayOfWeekName:(NSDate *)date
+{
+    NSDateFormatter *dfWeekDay = [[NSDateFormatter alloc]init];
+    [dfWeekDay setDateFormat:@"EEEE"];
+    NSString *weekDayString = [[dfWeekDay stringFromDate:date] capitalizedString];
+    weekDayString = [weekDayString substringToIndex:3];
+    return weekDayString;
 }
 
 
