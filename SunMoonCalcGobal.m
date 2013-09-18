@@ -10,6 +10,7 @@
 #import "SunMoonCalcGobal.h"
 #import "MoonCoordinate.h"
 #import "MoonPosition.h"
+#import "NSDate+Functions.h"
 
 #define MoonSetSelected 0
 #define MoonRiseSelected 1
@@ -471,7 +472,6 @@ BOOL SunSet = NO;
 #pragma mark - compute moonrise and moon set
 
 - (void)computeMoonriseAndMoonSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng{
-    [self conVertDateToStringMonthName:date];
     Rise_azM = 0.0;
     Set_azM = 0.0;
     Rise_timeM[0] = 0.0;
@@ -492,11 +492,11 @@ BOOL SunSet = NO;
     NSDate *dateLocation = [NSDate dateWithTimeInterval:-(zone + timeZoneOffset)*60*60 sinceDate:date];
     NSDate *dateCpt = [NSDate dateWithTimeInterval:-(timeZoneOffset*60*60) sinceDate:dateLocation];
 
-    NSString *day = [self conVertDateToStringDay:dateCpt];
+    NSString *day = [dateCpt conVertDateToStringDay];
     int dayValue = [day intValue];
-    NSString *month = [self conVertDateToStringMonth:dateCpt];
+    NSString *month = [dateCpt conVertDateToStringMonth];
     int monthValue = [month intValue];
-    NSString *year = [self conVertDateToStringYear:dateCpt];
+    NSString *year = [dateCpt conVertDateToStringYear];
     int yearValue = [year intValue];
     
     double jd = [self julian_day:yearValue withMonth:monthValue withDay:dayValue] - 2451545.0;
@@ -744,11 +744,11 @@ BOOL SunSet = NO;
     NSDate *dateLocation = [NSDate dateWithTimeInterval:-(zone + timeZoneOffset)*60*60 sinceDate:date];
     NSDate *dateCpt = [NSDate dateWithTimeInterval:-(timeZoneOffset*60*60) sinceDate:dateLocation];
     
-    NSString *day = [self conVertDateToStringDay:dateCpt];
-    int dayValue = [day intValue]  ;
-    NSString *month = [self conVertDateToStringMonth:dateCpt];
+    NSString *day = [dateCpt conVertDateToStringDay];
+    int dayValue = [day intValue];
+    NSString *month = [dateCpt conVertDateToStringMonth];
     int monthValue = [month intValue];
-    NSString *year = [self conVertDateToStringYear:dateCpt];
+    NSString *year = [dateCpt conVertDateToStringYear];
     int yearValue = [year intValue];
 
     int k;
@@ -972,64 +972,6 @@ BOOL SunSet = NO;
     jd = floor(365.25 * (year + 4716)) + floor(30.6001 * (month + 1)) + day + b - 1524.5;
     
     return jd;
-}
-
-#pragma mark - get date now
-
--(NSString *)conVertDateToStringMinute:(NSDate *)date
-{
-    NSDateFormatter *dfMinute = [[NSDateFormatter alloc]init];
-    [dfMinute setDateFormat:@"HH"];
-    NSString *minuteString = [dfMinute stringFromDate:date];
-    return minuteString;
-}
-
--(NSString *)conVertDateToStringHour:(NSDate *)date
-{
-    NSDateFormatter *dfHour = [[NSDateFormatter alloc]init];
-    [dfHour setDateFormat:@"HH"];
-    NSString *hourString = [dfHour stringFromDate:date];
-    return hourString;
-}
-
--(NSString *)conVertDateToStringDay:(NSDate *)date
-{
-    NSDateFormatter *dfDay = [[NSDateFormatter alloc]init];
-    [dfDay setDateFormat:@"dd"];
-    NSString *dayString = [dfDay stringFromDate:date];
-    return dayString;
-}
-
--(NSString *)conVertDateToStringMonth:(NSDate *)date
-{
-    NSDateFormatter *dfMonth = [[NSDateFormatter alloc]init];
-    [dfMonth setDateFormat:@"MM"];
-    NSString *monthString = [dfMonth stringFromDate:date];
-    return monthString;
-}
-
--(NSString *)conVertDateToStringYear:(NSDate *)date
-{
-    NSDateFormatter *dfYear = [[NSDateFormatter alloc]init];
-    [dfYear setDateFormat:@"yyyy"];
-    NSString *yearString = [dfYear stringFromDate:date];
-    return yearString;
-}
--(NSString *)conVertDateToStringMonthName:(NSDate *)date
-{
-    NSDateFormatter *dfMonth = [[NSDateFormatter alloc]init];
-    [dfMonth setDateFormat:@"MMMM"];
-    NSString *monthString = [[dfMonth stringFromDate:date] capitalizedString];
-    monthString = [monthString substringToIndex:3];
-    return monthString;
-}
--(NSString *)conVertDateToStringDayOfWeekName:(NSDate *)date
-{
-    NSDateFormatter *dfWeekDay = [[NSDateFormatter alloc]init];
-    [dfWeekDay setDateFormat:@"EEEE"];
-    NSString *weekDayString = [[dfWeekDay stringFromDate:date] capitalizedString];
-    weekDayString = [weekDayString substringToIndex:3];
-    return weekDayString;
 }
 
 
