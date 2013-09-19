@@ -13,7 +13,7 @@
 @interface SunMoonCalcGobal : NSObject {
     
 }
-@property BOOL currentHaveMoon;
+@property BOOL todayHaveMoon;
 @property (nonatomic ,strong) NSDate *timeRiseSun;
 @property (nonatomic, strong) NSDate *timeSetSun;
 @property (nonatomic ,strong) NSDate *timeRiseMoon;

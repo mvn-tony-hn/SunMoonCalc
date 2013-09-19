@@ -331,14 +331,19 @@ BOOL SunSet = NO;
 {
     if ((!MoonRise)&&(!MoonSet))                 // neither sunrise nor sunset
     {
-        if (VHzM[2] < 0)
+        if (VHzM[2] < 0){
             [self setMoonPositionHidden];
-        else if (VHzM[2] >= 0)
+        _todayHaveMoon = NO;
+        }
+        else if (VHzM[2] >= 0){
+            _todayHaveMoon = YES;
             [self showMoonPosition:moonPostion.azimuth withAltitude:moonPostion.altitude];
+        }
     }
     
     else if ((!MoonRise)||(!MoonSet))                                    // sunrise or sunset
     {
+        _todayHaveMoon = YES;
         if (!MoonRise) {
             if ([date compare:timeSetMoon]== NSOrderedDescending ) 
                 [self setMoonPositionHidden];
@@ -354,6 +359,7 @@ BOOL SunSet = NO;
     }
         
     else if((MoonRise) && (MoonSet)){
+        _todayHaveMoon = YES;
             if (moonRiseBig == YES) {
                 if (([date compare:timeRiseMoon]== NSOrderedAscending)&&([date compare:timeSetMoon]== NSOrderedDescending) ) 
                     [self setMoonPositionHidden];
@@ -371,14 +377,12 @@ BOOL SunSet = NO;
 
 - (void)setMoonPositionHidden
 {
-    _currentHaveMoon = NO;
     positionEntity.pointMoonX = centerAnnotationPoint;
     positionEntity.pointMoonY = centerAnnotationPoint;
 }
 
 - (void)showMoonPosition:(float)azimuth withAltitude:(float)altitude
 {
-    _currentHaveMoon = YES;
 
     double angle =  azimuth - M_PI_2;
     float x = centerAnnotationPoint + 100 *cos(angle)*cos(altitude);
