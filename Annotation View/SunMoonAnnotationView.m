@@ -35,12 +35,13 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
                                                  selector:@selector(didUpdateDate:)
                                                      name:kPDSunMoonDateTimeChangedNotification
                                                    object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self
+//                                                 selector:@selector(didUpdateHeading:)
+//                                                     name:kPDDidUpdateHeading
+//                                                   object:nil];
         sunMoonCalc = [[SunMoonCalcGobal alloc] init];
         [sunMoonCalc computeMoonriseAndMoonSet:date withLatitude:lat withLongitude:lng];
         [sunMoonCalc computeSunriseAndSunSet:date withLatitude:lat withLongitude:lng];
-//        NSDate *dateNow = [NSDate date];
-//
-//        double fraction = [sunMoonCalc getMoonFraction:dateNow];
 
         position = sunMoonCalc.positionEntity;
         [self initContentView];
@@ -49,7 +50,14 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     }
     return self;
 }
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDSunMoonDateTimeChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDUpdateSunMoonAnnotationNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDDidUpdateHeading object:nil];
 
+
+}
 - (void)initContentView
 {
     UIImage *sunRiseImage = [UIImage imageNamed:@"icon_sun_rise.png"];
@@ -168,30 +176,7 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     [self reloadAnnotation];
 }
 
-//- (void)didUpdateSunMoonOption:(NSNotification *)notification
-//{
-//    UIButton *btnClicked = [notification object];
-//    switch (btnClicked.tag) {
-//        case 0:
-//            self.sunMoonAnnotation.isHiddenSunRise = !btnClicked.selected;
-//            break;
-//        case 1:
-//            self.sunMoonAnnotation.isHiddenSunSet = !btnClicked.selected;
-//            break;
-//        case 2:
-//            self.sunMoonAnnotation.isHiddenMoonRise = !btnClicked.selected;
-//            break;
-//        case 3:
-//            self.sunMoonAnnotation.isHiddenMoonSet = !btnClicked.selected;
-//            break;
-//        default:
-//            break;
-//    }
-//    //    [self.mapView removeAnnotation:self.sunMoonAnnotation];
-//    //    [self.mapView addAnnotation:self.sunMoonAnnotation];
-//    position = moonSucCalc.positionEntity;
-//    [self reloadAnnotation];
-//}
+
 
 - (void)reloadAnnotation
 {
@@ -300,5 +285,12 @@ static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
     
     [self setNeedsDisplay];
 }
+
+//- (void)didUpdateHeading:(NSNotification *)notification
+//{
+//    NSDictionary *userInfo = notification.userInfo;
+//    float newRad = [[userInfo objectForKey:@"newRad"]floatValue];
+//    self.transform = CGAffineTransformMakeRotation(newRad);
+//}
 
 @end
