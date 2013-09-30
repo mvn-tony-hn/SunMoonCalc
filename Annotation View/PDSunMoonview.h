@@ -11,6 +11,9 @@
 #import "Globals.h"
 #import "SunMoonCalcGobal.h"
 #import "SunMoonAnnotation.h"
+
+#define kPDSetUserTrackingModeNoneNotification       @"kPDSetUserTrackingModeNoneNotification"
+
 static CGFloat const kDashedLinesLength[]   = {10.0f, 4.0f};
 
 @interface PDSunMoonview : UIView{

@@ -22,7 +22,7 @@
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didStopRotationMaptool)
-                                                     name:kPDSetUserTrackingModeNone
+                                                     name:kPDSetUserTrackingModeNoneNotification
                                                    object:nil];
         // Initialization code
     }
@@ -31,7 +31,7 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDDidUpdateHeading object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDSetUserTrackingModeNone object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDSetUserTrackingModeNoneNotification object:nil];
 
 
 }
