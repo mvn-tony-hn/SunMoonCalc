@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
-@interface MapPinAnnotation : MKPlacemark
+@interface MapPinAnnotation : NSObject<MKAnnotation>
 
-@property (nonatomic, retain) NSString *title;
+@property (nonatomic, copy) NSString *title;
 @property (nonatomic, assign, readwrite) CLLocationCoordinate2D coordinate;
 - (id)initWithTitle:(NSString *)title coordinate:(CLLocationCoordinate2D)coordinate;
 @end

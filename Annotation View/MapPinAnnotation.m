@@ -12,7 +12,7 @@
 
 - (id)initWithTitle:(NSString *)title coordinate:(CLLocationCoordinate2D)coordinate {
 	
-	if (self = [super initWithCoordinate:coordinate addressDictionary:nil]) {
+	if (self) {
         self.title = title;
 		self.coordinate = coordinate;
 	}

@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 
-@interface CameraAnnotation : MKPlacemark
+@interface CameraAnnotation : NSObject<MKAnnotation>
 
-@property (nonatomic, strong) NSString *title;
+@property (nonatomic, copy) NSString *title;
 @property (nonatomic, assign, readwrite) CLLocationCoordinate2D coordinate;
 - (id)initWithTitle:(NSString *)title coordinate:(CLLocationCoordinate2D)coordinate;
 @end

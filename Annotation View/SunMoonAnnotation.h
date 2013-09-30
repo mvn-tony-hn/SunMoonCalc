@@ -11,7 +11,7 @@
 
 @interface SunMoonAnnotation : NSObject <MKAnnotation>
 
-@property (nonatomic, retain) NSString *title;
+@property (nonatomic, copy) NSString *title;
 @property (nonatomic, assign, readwrite) CLLocationCoordinate2D coordinate;
 
 @property (nonatomic, assign) BOOL isHiddenSunRise;

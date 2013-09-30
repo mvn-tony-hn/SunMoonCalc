@@ -21,7 +21,7 @@
                                                      name:kPDDidUpdateHeading
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(didUpdate)
+                                                 selector:@selector(didStopRotationMaptool)
                                                      name:kPDSetUserTrackingModeNone
                                                    object:nil];
         // Initialization code
@@ -241,7 +241,7 @@
 
 }
 
-- (void)didUpdate
+- (void)didStopRotationMaptool
 {
     self.transform = CGAffineTransformMakeRotation(0);
 

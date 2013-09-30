@@ -11,7 +11,6 @@
 @implementation CameraAnnotation
 
 - (id)initWithTitle:(NSString *)title coordinate:(CLLocationCoordinate2D)coordinate {
-    self = [super initWithCoordinate:coordinate addressDictionary:nil];
     if (self) {
         self.title = title;
         self.coordinate = coordinate;
