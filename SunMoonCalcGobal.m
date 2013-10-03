@@ -510,24 +510,20 @@ BOOL SunSet = NO;
     Set_timeM[1] = 0.0;
     VHzM[2] = 0.0;
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-    
-    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
-    double timeZoneOffset = [destinationTimeZone secondsFromGMTForDate:date] / 3600.0;
     double x = lng;
     double zone = round(-x/15.0);
+
+    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
+    double timeZoneOffset = [destinationTimeZone secondsFromGMTForDate:date] / 3600.0;
+
     
     NSDate *dateLocation = [NSDate dateWithTimeInterval:-(zone + timeZoneOffset)*60*60 sinceDate:date];
     NSDate *dateCpt = [NSDate dateWithTimeInterval:-(timeZoneOffset*60*60) sinceDate:dateLocation];
 
-    NSString *day = [self conVertDateToStringDay:dateCpt];
-    int dayValue = [day intValue];
-    NSString *month = [self conVertDateToStringMonth:dateCpt];
-    int monthValue = [month intValue];
-    NSString *year = [self conVertDateToStringYear:dateCpt];
-    int yearValue = [year intValue];
+    int dayValue  = [[self conVertDateToStringDay:dateCpt]intValue];
+    int monthValue = [[self conVertDateToStringMonth:dateCpt]intValue];
+    int yearValue = [[self conVertDateToStringYear:dateCpt] intValue];
+    
     
     double jd = [self julian_day:yearValue withMonth:monthValue withDay:dayValue] - 2451545.0;
     
@@ -574,12 +570,12 @@ BOOL SunSet = NO;
         VHzM[0] = VHzM[2];
     }
     
-    NSString *dateStringRise = [NSString stringWithFormat:@"%@-%@-%@ %@:%@:00",year,month,day,[NSString stringWithFormat:@"%d",Rise_timeM[0]],[NSString stringWithFormat:@"%d",Rise_timeM[1]]];
-    NSDate *dateMoonRise = [dateFormatter dateFromString:dateStringRise];
+    NSString *dateStringRise = [NSString stringWithFormat:@"%d-%d-%d %@:%@:00",yearValue,monthValue,dayValue,[NSString stringWithFormat:@"%d",Rise_timeM[0]],[NSString stringWithFormat:@"%d",Rise_timeM[1]]];
+    NSDate *dateMoonRise = [_dateFormatter dateFromString:dateStringRise];
         timeRiseMoon = [NSDate dateWithTimeInterval:(zone)*60*60 sinceDate:dateMoonRise];
         
-    NSString *dateStringSet = [NSString stringWithFormat:@"%@-%@-%@ %@:%@:00",year,month,day,[NSString stringWithFormat:@"%d",Set_timeM[0]],[NSString stringWithFormat:@"%d",Set_timeM[1]]];
-    NSDate *dateMoonSet = [dateFormatter dateFromString:dateStringSet];
+    NSString *dateStringSet = [NSString stringWithFormat:@"%d-%d-%d %@:%@:00",yearValue,monthValue,dayValue,[NSString stringWithFormat:@"%d",Set_timeM[0]],[NSString stringWithFormat:@"%d",Set_timeM[1]]];
+    NSDate *dateMoonSet = [_dateFormatter dateFromString:dateStringSet];
         timeSetMoon = [NSDate dateWithTimeInterval:(zone)*60*60 sinceDate:dateMoonSet];
     NSDate *dateUTC = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateLocation];
 
@@ -763,9 +759,7 @@ BOOL SunSet = NO;
     Set_timeS[1] = 0.0;
     VHzS[2] = 0.0;
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+
     
     double x = lng;
     double zone = round(-x/15.0);
@@ -774,12 +768,9 @@ BOOL SunSet = NO;
     NSDate *dateLocation = [NSDate dateWithTimeInterval:-(zone + timeZoneOffset)*60*60 sinceDate:date];
     NSDate *dateCpt = [NSDate dateWithTimeInterval:-(timeZoneOffset*60*60) sinceDate:dateLocation];
     
-    NSString *day = [self conVertDateToStringDay:dateCpt];
-    int dayValue = [day intValue];
-    NSString *month = [self conVertDateToStringMonth:dateCpt];
-    int monthValue = [month intValue];
-    NSString *year = [self conVertDateToStringYear:dateCpt];
-    int yearValue = [year intValue];
+    int dayValue  = [[self conVertDateToStringDay:dateCpt]intValue];
+    int monthValue = [[self conVertDateToStringMonth:dateCpt]intValue];
+    int yearValue = [[self conVertDateToStringYear:dateCpt] intValue];
     
     int k;
     double jd = [self julian_day:yearValue withMonth:monthValue withDay:dayValue] - 2451545.0;
@@ -821,12 +812,12 @@ BOOL SunSet = NO;
         VHzS[0] = VHzS[2];
     }
     
-    NSString *dateStringRise = [NSString stringWithFormat:@"%@-%@-%@ %@:%@:00",year,month,day,[NSString stringWithFormat:@"%d",Rise_timeS[0]],[NSString stringWithFormat:@"%d",Rise_timeS[1]]];
-    NSDate *dateSunRise = [dateFormatter dateFromString:dateStringRise];
+    NSString *dateStringRise = [NSString stringWithFormat:@"%d-%d-%d %@:%@:00",yearValue,monthValue,dayValue,[NSString stringWithFormat:@"%d",Rise_timeS[0]],[NSString stringWithFormat:@"%d",Rise_timeS[1]]];
+    NSDate *dateSunRise = [_dateFormatter dateFromString:dateStringRise];
     timeRiseSun = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateSunRise];
     
-    NSString *dateStringSet = [NSString stringWithFormat:@"%@-%@-%@ %@:%@:00",year,month,day,[NSString stringWithFormat:@"%d",Set_timeS[0]],[NSString stringWithFormat:@"%d",Set_timeS[1]]];
-    NSDate *dateSunSet = [dateFormatter dateFromString:dateStringSet];
+    NSString *dateStringSet = [NSString stringWithFormat:@"%d-%d-%d %@:%@:00",yearValue,monthValue,dayValue,[NSString stringWithFormat:@"%d",Set_timeS[0]],[NSString stringWithFormat:@"%d",Set_timeS[1]]];
+    NSDate *dateSunSet = [_dateFormatter dateFromString:dateStringSet];
      timeSetSun = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateSunSet];
     NSDate *dateUTC = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateLocation];
     
