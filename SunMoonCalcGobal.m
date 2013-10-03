@@ -514,7 +514,7 @@ BOOL SunSet = NO;
     double zone = round(-x/15.0);
 
     NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
-    double timeZoneOffset = [destinationTimeZone secondsFromGMTForDate:date] / 3600.0;
+    double timeZoneOffset = [destinationTimeZone secondsFromGMTForDate:date]/3600.0 ;
 
     
     NSDate *dateLocation = [NSDate dateWithTimeInterval:-(zone + timeZoneOffset)*60*60 sinceDate:date];
@@ -570,11 +570,14 @@ BOOL SunSet = NO;
         VHzM[0] = VHzM[2];
     }
     
-    NSString *dateStringRise = [NSString stringWithFormat:@"%d-%d-%d %@:%@:00",yearValue,monthValue,dayValue,[NSString stringWithFormat:@"%d",Rise_timeM[0]],[NSString stringWithFormat:@"%d",Rise_timeM[1]]];
+    [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [_dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    
+    NSString *dateStringRise = [NSString stringWithFormat:@"%d-%d-%d %d:%d:00",yearValue,monthValue,dayValue,Rise_timeM[0],Rise_timeM[1]];
     NSDate *dateMoonRise = [_dateFormatter dateFromString:dateStringRise];
         timeRiseMoon = [NSDate dateWithTimeInterval:(zone)*60*60 sinceDate:dateMoonRise];
         
-    NSString *dateStringSet = [NSString stringWithFormat:@"%d-%d-%d %@:%@:00",yearValue,monthValue,dayValue,[NSString stringWithFormat:@"%d",Set_timeM[0]],[NSString stringWithFormat:@"%d",Set_timeM[1]]];
+    NSString *dateStringSet = [NSString stringWithFormat:@"%d-%d-%d %d:%d:00",yearValue,monthValue,dayValue,Set_timeM[0],Set_timeM[1]];
     NSDate *dateMoonSet = [_dateFormatter dateFromString:dateStringSet];
         timeSetMoon = [NSDate dateWithTimeInterval:(zone)*60*60 sinceDate:dateMoonSet];
     NSDate *dateUTC = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateLocation];
@@ -811,12 +814,14 @@ BOOL SunSet = NO;
         DecS[0] = DecS[2];
         VHzS[0] = VHzS[2];
     }
+    [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [_dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
     
-    NSString *dateStringRise = [NSString stringWithFormat:@"%d-%d-%d %@:%@:00",yearValue,monthValue,dayValue,[NSString stringWithFormat:@"%d",Rise_timeS[0]],[NSString stringWithFormat:@"%d",Rise_timeS[1]]];
+    NSString *dateStringRise = [NSString stringWithFormat:@"%d-%d-%d %d:%d:00",yearValue,monthValue,dayValue,Rise_timeS[0],Rise_timeS[1]];
     NSDate *dateSunRise = [_dateFormatter dateFromString:dateStringRise];
     timeRiseSun = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateSunRise];
     
-    NSString *dateStringSet = [NSString stringWithFormat:@"%d-%d-%d %@:%@:00",yearValue,monthValue,dayValue,[NSString stringWithFormat:@"%d",Set_timeS[0]],[NSString stringWithFormat:@"%d",Set_timeS[1]]];
+    NSString *dateStringSet = [NSString stringWithFormat:@"%d-%d-%d %d:%d:00",yearValue,monthValue,dayValue,Set_timeS[0],Set_timeS[1]];
     NSDate *dateSunSet = [_dateFormatter dateFromString:dateStringSet];
      timeSetSun = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateSunSet];
     NSDate *dateUTC = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateLocation];
