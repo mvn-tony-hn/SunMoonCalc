@@ -18,6 +18,13 @@
 @property (nonatomic, strong) NSDate *timeSetSun;
 @property (nonatomic ,strong) NSDate *timeRiseMoon;
 @property (nonatomic, strong) NSDate *timeSetMoon;
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSDateFormatter *dateFormatterYear;
+@property (nonatomic, strong) NSDateFormatter *dateFormatterMonth;
+@property (nonatomic, strong) NSDateFormatter *dateFormatterDay;
+@property (nonatomic, strong) NSDateFormatter *dateFormatterHour;
+@property (nonatomic, strong) NSDateFormatter *dateFormatterMinute;
+@property (nonatomic, strong) NSDate *julianDate;
 @property BOOL MoonRise ;
 @property BOOL MoonSet ;
 @property (nonatomic, strong) PositionEntity *positionEntity;

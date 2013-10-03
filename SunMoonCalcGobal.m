@@ -49,7 +49,28 @@ BOOL SunSet = NO;
 {
     self = [super init];
     if (self) {
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        [_dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+        
+        _dateFormatterYear = [[NSDateFormatter alloc] init];
+        [_dateFormatterYear setDateFormat:@"yyyy"];
+
+        
+        _dateFormatterMonth = [[NSDateFormatter alloc] init];
+        [_dateFormatterMonth setDateFormat:@"MM"];
+
+        _dateFormatterDay = [[NSDateFormatter alloc] init];
+        [_dateFormatterDay setDateFormat:@"dd"];
+
+        _dateFormatterHour = [[NSDateFormatter alloc] init];
+        [_dateFormatterHour setDateFormat:@"HH"];
+
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatterMinute setDateFormat:@"mm"];
+
         positionEntity = [[PositionEntity alloc]init];
+        [self toJulianDate];
     }
     return self;
 }
@@ -90,15 +111,19 @@ BOOL SunSet = NO;
     return 2451545;
 }
 
-- (double) toJulian:(NSDate*)date {
+- (void)toJulianDate
+{
     NSString *JulianString = @"1970-01-01 00:00:00";
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    _julianDate = [dateFormatter dateFromString:JulianString];
     
-    NSDate *julianDate = [dateFormatter dateFromString:JulianString];
+}
+
+- (double) toJulian:(NSDate*)date {
     
-    NSTimeInterval differentBetweenDates = [date timeIntervalSinceDate:julianDate];
+    NSTimeInterval differentBetweenDates = [date timeIntervalSinceDate:_julianDate];
     return differentBetweenDates/ self.secondInDay - 0.5 + self.J1970;
 }
 
@@ -306,7 +331,7 @@ BOOL SunSet = NO;
     return moonCoor;
 }
 
-- (MoonPosition *)getMoonPositionWithDate:(NSDate*)date andLatitude:(double)lat andLongitude:(double)lng wihtBool:(BOOL)moonRiseBig{
+- (MoonPosition *)getMoonPositionWithDate:(NSDate*)date andLatitude:(double)lat andLongitude:(double)lng withBool:(BOOL)moonRiseBig {
 
     double lw = DR * -lng;
     double phi = DR * lat;
@@ -322,6 +347,7 @@ BOOL SunSet = NO;
                                                       andAltitude:h
                                                       andDistance:c.distance];
 //    NSLog(@"azimuth = %f,altitude = %f,distance = %f",moonPos.azimuth,moonPos.altitude,moonPos.distance);
+//    [self showMoonPosition:moonPos.azimuth withAltitude:moonPos.altitude];
     [self setMoonPositionWithTime:moonPos withDate:date withbool:moonRiseBig];
     return moonPos;
 }
@@ -496,11 +522,11 @@ BOOL SunSet = NO;
     NSDate *dateLocation = [NSDate dateWithTimeInterval:-(zone + timeZoneOffset)*60*60 sinceDate:date];
     NSDate *dateCpt = [NSDate dateWithTimeInterval:-(timeZoneOffset*60*60) sinceDate:dateLocation];
 
-    NSString *day = [dateCpt conVertDateToStringDay];
+    NSString *day = [self conVertDateToStringDay:dateCpt];
     int dayValue = [day intValue];
-    NSString *month = [dateCpt conVertDateToStringMonth];
+    NSString *month = [self conVertDateToStringMonth:dateCpt];
     int monthValue = [month intValue];
-    NSString *year = [dateCpt conVertDateToStringYear];
+    NSString *year = [self conVertDateToStringYear:dateCpt];
     int yearValue = [year intValue];
     
     double jd = [self julian_day:yearValue withMonth:monthValue withDay:dayValue] - 2451545.0;
@@ -558,12 +584,12 @@ BOOL SunSet = NO;
     NSDate *dateUTC = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateLocation];
 
     
-    if ([timeRiseMoon compare:timeSetMoon] == NSOrderedDescending) 
-        [self getMoonPositionWithDate:dateUTC andLatitude:lat andLongitude:lng wihtBool:YES];
+    if ([timeRiseMoon compare:timeSetMoon] == NSOrderedDescending)
+        [self getMoonPositionWithDate:dateUTC andLatitude:lat andLongitude:lng withBool:YES];
     else
-        [self getMoonPositionWithDate:dateUTC andLatitude:lat andLongitude:lng wihtBool:NO];
+        [self getMoonPositionWithDate:dateUTC andLatitude:lat andLongitude:lng withBool:NO];
     
-    if (MoonRise == YES) 
+    if (MoonRise == YES)
         [self computePointInCricle:Rise_azM withRiseOrSet:MoonRiseSelected];
     else 
         [self setMoonRiseHidden];
@@ -748,13 +774,13 @@ BOOL SunSet = NO;
     NSDate *dateLocation = [NSDate dateWithTimeInterval:-(zone + timeZoneOffset)*60*60 sinceDate:date];
     NSDate *dateCpt = [NSDate dateWithTimeInterval:-(timeZoneOffset*60*60) sinceDate:dateLocation];
     
-    NSString *day = [dateCpt conVertDateToStringDay];
+    NSString *day = [self conVertDateToStringDay:dateCpt];
     int dayValue = [day intValue];
-    NSString *month = [dateCpt conVertDateToStringMonth];
+    NSString *month = [self conVertDateToStringMonth:dateCpt];
     int monthValue = [month intValue];
-    NSString *year = [dateCpt conVertDateToStringYear];
+    NSString *year = [self conVertDateToStringYear:dateCpt];
     int yearValue = [year intValue];
-
+    
     int k;
     double jd = [self julian_day:yearValue withMonth:monthValue withDay:dayValue] - 2451545.0;
 
@@ -976,6 +1002,37 @@ BOOL SunSet = NO;
     jd = floor(365.25 * (year + 4716)) + floor(30.6001 * (month + 1)) + day + b - 1524.5;
     
     return jd;
+}
+
+#pragma mark -  convert Date
+-(NSString *)conVertDateToStringMonth:(NSDate *)date
+{
+    NSString *monthString = [_dateFormatterMonth stringFromDate:date];
+    return monthString;
+}
+
+-(NSString *)conVertDateToStringYear:(NSDate *)date
+{
+    NSString *yearString = [_dateFormatterYear stringFromDate:date];
+    return yearString;
+}
+
+-(NSString *)conVertDateToStringMinute:(NSDate *)date
+{
+    NSString *minuteString = [_dateFormatterMinute stringFromDate:date];
+    return minuteString;
+}
+
+-(NSString *)conVertDateToStringHour:(NSDate *)date
+{
+    NSString *hourString = [_dateFormatterHour stringFromDate:date];
+    return hourString;
+}
+
+-(NSString *)conVertDateToStringDay:(NSDate *)date
+{
+    NSString *dayString = [_dateFormatterDay stringFromDate:date];
+    return dayString;
 }
 
 

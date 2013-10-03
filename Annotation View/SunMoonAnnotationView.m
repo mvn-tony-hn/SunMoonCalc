@@ -36,7 +36,12 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didUpdateDate:)
-                                                     name:kPDSunMoonDateTimeChangedNotification
+                                                     name:kPDSunMoonDateChangedNotification
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(didUpdateDate:)
+                                                     name:kPDSunMoonTimeChangedNotification
                                                    object:nil];
         
         
@@ -56,8 +61,10 @@
 }
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDSunMoonDateTimeChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDSunMoonDateChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDSunMoonTimeChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDUpdateSunMoonAnnotationNotification object:nil];
+
     
     
 }
