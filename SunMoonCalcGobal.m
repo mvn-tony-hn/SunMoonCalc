@@ -54,21 +54,8 @@ BOOL SunSet = NO;
         [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         [_dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
         
-        _dateFormatterYear = [[NSDateFormatter alloc] init];
-        [_dateFormatterYear setDateFormat:@"yyyy"];
+        _dateFormatterConvert = [[NSDateFormatter alloc] init];
 
-        
-        _dateFormatterMonth = [[NSDateFormatter alloc] init];
-        [_dateFormatterMonth setDateFormat:@"MM"];
-
-        _dateFormatterDay = [[NSDateFormatter alloc] init];
-        [_dateFormatterDay setDateFormat:@"dd"];
-
-        _dateFormatterHour = [[NSDateFormatter alloc] init];
-        [_dateFormatterHour setDateFormat:@"HH"];
-
-        _dateFormatterMinute = [[NSDateFormatter alloc] init];
-        [_dateFormatterMinute setDateFormat:@"mm"];
 
         positionEntity = [[PositionEntity alloc]init];
     }
@@ -229,6 +216,7 @@ BOOL SunSet = NO;
 }
 
 # pragma mark - get Sun Time
+
 - (NSDictionary*)getSunTimesWithDate:(NSDate*)date andLatitude:(double)lat andLogitude:(double)lng {
     
     double lw = DR * -lng;
@@ -279,7 +267,23 @@ BOOL SunSet = NO;
     return (1 + cos(inc)) / 2.0f;
 }
 
-#pragma mark - getposition Sun
+#pragma mark - set sun position
+
+- (void)setSun:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng
+{
+    
+    [self getSunPositionWithDate:date andLatitude:lat andLongitude:lng];
+    
+    if (Sunrise == YES)
+        [self computePointInCricle:Rise_azS withRiseOrSet:SunRiseSelected];
+    else
+        [self setSunRiseHidden];
+    if (SunSet == YES)
+        [self computePointInCricle:Set_azS withRiseOrSet:SunSetSelected];
+    else
+        [self setSunSetHidden];
+    
+}
 
 - (SunCoordinate*)getSunCoordsWithDayNumber:(double)julianDay {
     
@@ -366,7 +370,24 @@ BOOL SunSet = NO;
 
 }
 
-#pragma mark - get position Moon
+#pragma mark - set moon position 
+
+- (void)setMoon:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng
+{
+    
+    MoonPosition *moonPosition = [self getMoonPositionWithDate:date andLatitude:lat andLongitude:lng ];
+    [self setMoonPositionWithTime:moonPosition withDate:date];
+    
+    if (MoonRise == YES)
+        [self computePointInCricle:Rise_azM withRiseOrSet:MoonRiseSelected];
+    else
+        [self setMoonRiseHidden];
+    if (MoonSet == YES)
+        [self computePointInCricle:Set_azM withRiseOrSet:MoonSetSelected];
+    else
+        [self setMoonSetHidden];
+    
+}
 
 - (MoonCoordinate *)getMoonCoords:(double)julianday { // geocentric ecliptic coordinates of the moon
     
@@ -384,7 +405,7 @@ BOOL SunSet = NO;
     
 }
 
-- (MoonPosition *)getMoonPositionWithDate:(NSDate*)date andLatitude:(double)lat andLongitude:(double)lng withBool:(BOOL)moonRiseBig {
+- (MoonPosition *)getMoonPositionWithDate:(NSDate*)date andLatitude:(double)lat andLongitude:(double)lng {
 
     double lw = DR * -lng;
     double phi = DR * lat;
@@ -399,13 +420,12 @@ BOOL SunSet = NO;
     MoonPosition *moonPosition = [[MoonPosition alloc] initWithAzimuth:[self getAzimuthWithHourAngle:H observerLatitude:phi andDeclination:c.declination]
                                                       andAltitude:h
                                                       andDistance:c.distance];
-    [self setMoonPositionWithTime:moonPosition withDate:date withbool:moonRiseBig];
     return moonPosition;
     
 }
 
 
-- (void)setMoonPositionWithTime:(MoonPosition *)moonPostion withDate:(NSDate *)date withbool:(BOOL)moonRiseBig
+- (void)setMoonPositionWithTime:(MoonPosition *)moonPostion withDate:(NSDate *)date
 {
     
     if ((!MoonRise)&&(!MoonSet))                 // neither sunrise nor sunset
@@ -439,7 +459,7 @@ BOOL SunSet = NO;
         
     else if((MoonRise) && (MoonSet)){
         _todayHaveMoon = YES;
-            if (moonRiseBig == YES) {
+            if (timeRiseMoon.timeIntervalSince1970  > timeSetMoon.timeIntervalSince1970) {
                 if (([date compare:timeRiseMoon]== NSOrderedAscending)&&([date compare:timeSetMoon]== NSOrderedDescending) ) 
                     [self setMoonPositionHidden];
                 else
@@ -582,23 +602,11 @@ BOOL SunSet = NO;
     
     double x = lng;
     double zone = round(-x/15.0);
-
-    double timeZoneOffset = [[NSTimeZone systemTimeZone] secondsFromGMTForDate:date]/3600.0;
-    NSDate *dateLocation = [NSDate dateWithTimeInterval:-(zone + timeZoneOffset)*60*60 sinceDate:date];
-
-    int dayValue  = [[self conVertDateToStringDay:dateLocation]intValue];
-    int monthValue = [[self conVertDateToStringMonth:dateLocation]intValue];
-    int yearValue = [[self conVertDateToStringYear:dateLocation] intValue];
     
-    
-    double jd = [self julian_day:yearValue withMonth:monthValue withDay:dayValue] - 2451545.0;
-    
+    double jd = [self calculateJulianDay:date withLatitude:lat withLongitude:lng];
     double mp[3][3] = {0.0,0.0,0.0,0.0,0.0,0.0};
-    
     float longitude = lng/360.0;
-    
     double tz = zone / 24.0;
-
     double t0 = [self lst:longitude withJday:jd withZ:tz];
     
     jd = jd + tz;
@@ -636,31 +644,11 @@ BOOL SunSet = NO;
         VHzM[0] = VHzM[2];
     }
     
-    NSString *dateStringRise = [NSString stringWithFormat:@"%d-%d-%d %d:%d:00",yearValue,monthValue,dayValue,Rise_timeM[0],Rise_timeM[1]];
-    NSDate *dateMoonRise = [_dateFormatter dateFromString:dateStringRise];
-    timeRiseMoon = [NSDate dateWithTimeInterval:(zone)*60*60 sinceDate:dateMoonRise];
-        
-    NSString *dateStringSet = [NSString stringWithFormat:@"%d-%d-%d %d:%d:00",yearValue,monthValue,dayValue,Set_timeM[0],Set_timeM[1]];
-    NSDate *dateMoonSet = [_dateFormatter dateFromString:dateStringSet];
-    timeSetMoon = [NSDate dateWithTimeInterval:(zone)*60*60 sinceDate:dateMoonSet];
-
-    
-    if ([timeRiseMoon compare:timeSetMoon] == NSOrderedDescending)
-        [self getMoonPositionWithDate:date andLatitude:lat andLongitude:lng withBool:YES];
-    else
-        [self getMoonPositionWithDate:date andLatitude:lat andLongitude:lng withBool:NO];
-    
-    if (MoonRise == YES)
-        [self computePointInCricle:Rise_azM withRiseOrSet:MoonRiseSelected];
-    else 
-        [self setMoonRiseHidden];
-    if (MoonSet == YES) 
-        [self computePointInCricle:Set_azM withRiseOrSet:MoonSetSelected];
-    else
-        [self setMoonSetHidden];
+    timeRiseMoon = [self getTimesFromHour:Rise_timeM[0] andMinute:Rise_timeM[1] andZone:zone];
+    timeSetMoon = [self getTimesFromHour:Set_timeM[0] andMinute:Set_timeM[1] andZone:zone];
+    [self setMoon:date withLatitude:lat withLongitude:lng];
     
 }
-
 
 - (double)test_moon:(double)k withZone:(double)zone witht0:(double)t0 withLat:(double)lat withPlx:(double)plx
 {
@@ -832,17 +820,8 @@ BOOL SunSet = NO;
     
     double x = lng;
     double zone = round(-x/15.0);
-    
-    double timeZoneOffset = [[NSTimeZone systemTimeZone] secondsFromGMTForDate:date]/3600.0;
-    NSDate *dateLocation = [NSDate dateWithTimeInterval:-(zone + timeZoneOffset)*60*60 sinceDate:date];
-    
-    int dayValue  = [[self conVertDateToStringDay:dateLocation]intValue];
-    int monthValue = [[self conVertDateToStringMonth:dateLocation]intValue];
-    int yearValue = [[self conVertDateToStringYear:dateLocation] intValue];
-    
     int k;
-    double jd = [self julian_day:yearValue withMonth:monthValue withDay:dayValue] - 2451545.0;
-
+    double jd = [self calculateJulianDay:date withLatitude:lat withLongitude:lng];
     double longitude = lng /360.0;
     double tz  = zone /24.0;
     double ct  = jd/36525.0 + 1;                    // centuries since 1900.0
@@ -877,24 +856,9 @@ BOOL SunSet = NO;
         VHzS[0] = VHzS[2];
     }
     
-    NSString *dateStringRise = [NSString stringWithFormat:@"%d-%d-%d %d:%d:00",yearValue,monthValue,dayValue,Rise_timeS[0],Rise_timeS[1]];
-    NSDate *dateSunRise = [_dateFormatter dateFromString:dateStringRise];
-    timeRiseSun = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateSunRise];
-    
-    NSString *dateStringSet = [NSString stringWithFormat:@"%d-%d-%d %d:%d:00",yearValue,monthValue,dayValue,Set_timeS[0],Set_timeS[1]];
-    NSDate *dateSunSet = [_dateFormatter dateFromString:dateStringSet];
-    timeSetSun = [NSDate dateWithTimeInterval:zone*60*60 sinceDate:dateSunSet];
-    
-    [self getSunPositionWithDate:date andLatitude:lat andLongitude:lng];
-
-    if (Sunrise == YES) 
-        [self computePointInCricle:Rise_azS withRiseOrSet:SunRiseSelected];
-    else
-        [self setSunRiseHidden];
-    if (SunSet == YES) 
-        [self computePointInCricle:Set_azS withRiseOrSet:SunSetSelected];
-    else
-        [self setSunSetHidden];
+    timeRiseSun = [self getTimesFromHour:Rise_timeS[0] andMinute:Rise_timeS[1] andZone:zone];
+    timeSetSun = [self getTimesFromHour:Set_timeS[0] andMinute:Set_timeS[1] andZone:zone];
+    [self setSun:date withLatitude:lat withLongitude:lng];
     
 }
 
@@ -1014,6 +978,32 @@ BOOL SunSet = NO;
 
 #pragma mark - get moon , sun rise and set global
 
+- (NSDate *)getTimesFromHour:(int)hour andMinute:(int)minute andZone:(double)zone
+{
+    
+    NSString *dateStringRise = [NSString stringWithFormat:@"%d-%d-%d %d:%d:00",_yearValue,_monthValue,_dayValue,hour,minute];
+    NSDate *dateMoonRise = [_dateFormatter dateFromString:dateStringRise];
+    return [NSDate dateWithTimeInterval:(zone)*60*60 sinceDate:dateMoonRise];
+    
+}
+
+- (double )calculateJulianDay:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng
+{
+    
+    double x = lng;
+    double zone = round(-x/15.0);
+    
+    double timeZoneOffset = [[NSTimeZone systemTimeZone] secondsFromGMTForDate:date]/3600.0;
+    NSDate *dateLocation = [NSDate dateWithTimeInterval:-(zone + timeZoneOffset)*60*60 sinceDate:date];
+    
+    _dayValue  = [[self conVertDateToStringFomatBy:@"dd" withDate:dateLocation]intValue];
+    _monthValue = [[self conVertDateToStringFomatBy:@"MM" withDate:dateLocation]intValue];
+    _yearValue = [[self conVertDateToStringFomatBy:@"yyyy" withDate:dateLocation] intValue];
+    
+    return [self julian_day:_yearValue withMonth:_monthValue withDay:_dayValue] - 2451545.0;
+    
+}
+
 - (int)sgn:( double )x
 {
     
@@ -1074,39 +1064,14 @@ BOOL SunSet = NO;
 
 #pragma mark -  convert Date
 
-- (NSString *)conVertDateToStringMonth:(NSDate *)date
+- (NSString *)conVertDateToStringFomatBy:(NSString *)formatString withDate:(NSDate *)date
 {
     
-    NSString *monthString = [_dateFormatterMonth stringFromDate:date];
-    return monthString;
-    
-}
-
-- (NSString *)conVertDateToStringYear:(NSDate *)date
-{
-    
-    NSString *yearString = [_dateFormatterYear stringFromDate:date];
-    return yearString;
+    [_dateFormatterConvert setDateFormat:formatString];
+    return [_dateFormatterConvert stringFromDate:date];
     
 }
 
-- (NSString *)conVertDateToStringMinute:(NSDate *)date
-{
-    NSString *minuteString = [_dateFormatterMinute stringFromDate:date];
-    return minuteString;
-}
-
-- (NSString *)conVertDateToStringHour:(NSDate *)date
-{
-    NSString *hourString = [_dateFormatterHour stringFromDate:date];
-    return hourString;
-}
-
-- (NSString *)conVertDateToStringDay:(NSDate *)date
-{
-    NSString *dayString = [_dateFormatterDay stringFromDate:date];
-    return dayString;
-}
 
 
 @end
