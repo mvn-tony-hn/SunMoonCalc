@@ -53,10 +53,7 @@ BOOL SunSet = NO;
         _dateFormatter = [[NSDateFormatter alloc] init];
         [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         [_dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-        
         _dateFormatterConvert = [[NSDateFormatter alloc] init];
-
-
         positionEntity = [[PositionEntity alloc]init];
     }
     
@@ -164,7 +161,7 @@ BOOL SunSet = NO;
     return 0.0009;
     
 }
-- (NSDate *) fromJulian:(double)j {
+- (NSDate *)fromJulian:(double)j {
     
     double timeInterval = (j+ 0.5 - self.J1970) * [self secondInDay];
     NSDate * date = [[NSDate alloc]initWithTimeIntervalSince1970:timeInterval];
@@ -460,14 +457,14 @@ BOOL SunSet = NO;
     else if((MoonRise) && (MoonSet)){
         _todayHaveMoon = YES;
             if (timeRiseMoon.timeIntervalSince1970  > timeSetMoon.timeIntervalSince1970) {
-                if (([date compare:timeRiseMoon]== NSOrderedAscending)&&([date compare:timeSetMoon]== NSOrderedDescending) ) 
+                if ( date.timeIntervalSince1970 < timeRiseMoon.timeIntervalSince1970 && date.timeIntervalSince1970 > timeSetMoon.timeIntervalSince1970 )
                     [self setMoonPositionHidden];
                 else
                     [self showMoonPosition:moonPostion.azimuth withAltitude:moonPostion.altitude];
 
             }
             else 
-                if (([date compare:timeRiseMoon]== NSOrderedAscending)||([date compare:timeSetMoon]== NSOrderedDescending) ) 
+                if (date.timeIntervalSince1970 < timeRiseMoon.timeIntervalSince1970 || date.timeIntervalSince1970 > timeSetMoon.timeIntervalSince1970 )
                     [self setMoonPositionHidden];
                 else 
                     [self showMoonPosition:moonPostion.azimuth withAltitude:moonPostion.altitude];
@@ -588,9 +585,10 @@ BOOL SunSet = NO;
     positionEntity.pointMoonSetY = centerAnnotationPoint;
     
 }
+
 #pragma mark - compute moonrise and moon set
 
-- (void)getMoonriseAndMoonSetTimes:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng{
+- (void)computeMoonriseAndMoonSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng{
     
     Rise_azM = 0.0;
     Set_azM = 0.0;
@@ -807,7 +805,7 @@ BOOL SunSet = NO;
 
 #pragma mark - compute Sun rise and Sun set
 
-- (void)getSunriseAndSunSetTimes:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng
+- (void)computeSunriseAndSunSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng
 {
     
     Rise_azS = 0.0;
@@ -976,7 +974,7 @@ BOOL SunSet = NO;
     
 }
 
-#pragma mark - get moon , sun rise and set global
+#pragma mark - sunmoon global
 
 - (NSDate *)getTimesFromHour:(int)hour andMinute:(int)minute andZone:(double)zone
 {

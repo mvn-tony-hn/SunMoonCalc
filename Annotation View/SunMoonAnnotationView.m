@@ -46,8 +46,8 @@
         
         
         sunMoonCalc = [[SunMoonCalcGobal alloc] init];
-        [sunMoonCalc getMoonriseAndMoonSetTimes:date withLatitude:lat withLongitude:lng];
-        [sunMoonCalc getSunriseAndSunSetTimes:date withLatitude:lat withLongitude:lng];
+        [sunMoonCalc computeMoonriseAndMoonSet:date withLatitude:lat withLongitude:lng];
+        [sunMoonCalc computeSunriseAndSunSet:date withLatitude:lat withLongitude:lng];
         
         position = sunMoonCalc.positionEntity;
         _sunmoonView.sunMoonAnnotation = sunMoonAnnotation;
@@ -74,10 +74,10 @@
 - (void)didUpdateCoordinate:(NSNotification *)notification {
     CLLocation *newLocation = (CLLocation *)[notification object];
     locationCompute = newLocation;
-    [sunMoonCalc getMoonriseAndMoonSetTimes:dateCompute
+    [sunMoonCalc computeMoonriseAndMoonSet:dateCompute
                               withLatitude:newLocation.coordinate.latitude
                              withLongitude:newLocation.coordinate.longitude];
-    [sunMoonCalc getSunriseAndSunSetTimes:dateCompute
+    [sunMoonCalc computeSunriseAndSunSet:dateCompute
                             withLatitude:newLocation.coordinate.latitude
                            withLongitude:newLocation.coordinate.longitude];
     position = sunMoonCalc.positionEntity;
@@ -89,10 +89,10 @@
 {
     NSDate *date = (NSDate *)[notification object];
     dateCompute = date;
-    [sunMoonCalc getMoonriseAndMoonSetTimes:date
+    [sunMoonCalc computeMoonriseAndMoonSet:date
                               withLatitude:locationCompute.coordinate.latitude
                              withLongitude:locationCompute.coordinate.longitude];
-    [sunMoonCalc getSunriseAndSunSetTimes:date
+    [sunMoonCalc computeSunriseAndSunSet:date
                             withLatitude:locationCompute.coordinate.latitude
                            withLongitude:locationCompute.coordinate.longitude];
     position = sunMoonCalc.positionEntity;

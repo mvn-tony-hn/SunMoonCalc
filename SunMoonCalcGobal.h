@@ -27,8 +27,8 @@
 @property BOOL MoonRise ;
 @property BOOL MoonSet ;
 @property (nonatomic, strong) PositionEntity *positionEntity;
-- (void)getMoonriseAndMoonSetTimes:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng;
-- (void)getSunriseAndSunSetTimes:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng;
+- (void)computeMoonriseAndMoonSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng;
+- (void)computeSunriseAndSunSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng;
 - (NSDictionary*)getSunTimesWithDate:(NSDate*)date andLatitude:(double)lat andLogitude:(double)lng ;
 - (double)getMoonFraction:(NSDate *)date;
 
