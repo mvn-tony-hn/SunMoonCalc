@@ -11,11 +11,6 @@
 #import "MoonCoordinate.h"
 #import "MoonPosition.h"
 
-#define MoonSetSelected 0
-#define MoonRiseSelected 1
-#define SunSetSelected 3
-#define SunRiseSelected 4
-
 double DR = M_PI/180.0;
 double K1 = 15 * M_PI/180.0 * 1.0027379 ;
 double SkyM[3] = {0.0,0.0,0.0} ;
@@ -26,7 +21,6 @@ int Rise_timeM[2] = {0 , 0};
 int Set_timeM[2] = {0,0};
 double Rise_azM = 0.0;
 double Set_azM = 0.0;
-
 
 double SkyS[3] = {0.0,0.0,0.0} ;
 double RAnS[3] = {0.0,0.0,0.0};
