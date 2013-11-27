@@ -10,6 +10,7 @@
 #import "PositionEntity.h"
 #import "SunPosition.h"
 #define centerAnnotationPoint   103
+#define kCenterPoint            CGPointMake(103, 103);
 @interface SunMoonCalcGobal : NSObject {
     
 }

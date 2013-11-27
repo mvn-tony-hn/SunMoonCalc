@@ -13,19 +13,11 @@
 
 }
 
-@property float pointMoonRiseX;
-@property float pointMoonRiseY;
-@property float pointMoonSetX;
-@property float pointMoonSetY;
-@property float pointMoonX;
-@property float pointMoonY;
-
-
-@property float pointSunRiseX;
-@property float pointSunRiseY;
-@property float pointSunSetX;
-@property float pointSunSetY;
-@property float pointSunX;
-@property float pointSunY;
+@property CGPoint pointMoonRise;
+@property CGPoint pointMoonSet;
+@property CGPoint pointMoon;
+@property CGPoint pointSunRise;
+@property CGPoint pointSunSet;
+@property CGPoint pointSun;
 
 @end

@@ -218,9 +218,23 @@ BOOL SunSet = NO;
     
 }
 
+- (CGPoint )setPoint:(BOOL)isHiddenPoint andAzimuth:(double)azimuth andAltitude:(double)altitude
+{
+    CGPoint point;
+    if (isHiddenPoint) {
+        point = kCenterPoint;
+    } else{
+        double angle =  azimuth - M_PI_2;
+        float x = centerAnnotationPoint + 100 *cos(angle)*cos(altitude);
+        float y = centerAnnotationPoint + 100 *sin(angle)*cos(altitude);
+        point = CGPointMake(x, y);
+    }
+    return point;
+}
+
 # pragma mark - get Sun Time
 
-- (NSDictionary*)getSunTimesWithDate:(NSDate*)date andLatitude:(double)lat andLogitude:(double)lng {
+- (NSDictionary *)getSunTimesWithDate:(NSDate*)date andLatitude:(double)lat andLogitude:(double)lng {
     
     double lw = DR * -lng;
     double phi = DR * lat;
@@ -276,16 +290,8 @@ BOOL SunSet = NO;
 {
     
     [self getSunPositionWithDate:date andLatitude:lat andLongitude:lng];
-    
-    if (Sunrise == YES)
-//        self showMoonPosition:<#(float)#> withAltitude:<#(float)#>
-        [self computePointInCricle:Rise_azS withRiseOrSet:SunRiseSelected];
-    else
-        [self setSunRiseHidden];
-    if (SunSet == YES)
-        [self computePointInCricle:Set_azS withRiseOrSet:SunSetSelected];
-    else
-        [self setSunSetHidden];
+    positionEntity.pointSunRise = [self setPoint:!MoonRise andAzimuth:Rise_azS*DR andAltitude:0];
+    positionEntity.pointSunSet = [self setPoint:!MoonSet andAzimuth:Set_azS*DR andAltitude:0];
     
 }
 
@@ -319,59 +325,26 @@ BOOL SunSet = NO;
 
 - (void)setSunPositionWithTime:(SunPosition *)sunPostion withDate:(NSDate *)date
 {
-    
-        if ((!Sunrise)&&(!SunSet))                 // neither sunrise nor sunset
-        {
-            if (VHzS[2] < 0)
-                [self setSunPositionHidden];
-            else
-                [self showSunPosition:sunPostion.azimuth withAltitude:sunPostion.altitude];
-        }
-        else if ((!Sunrise)||(!SunSet))                                    // sunrise or sunset
-        {
-            if (!Sunrise) {
-                if ([timeSetSun compare:date] == NSOrderedAscending) 
-                    [self setSunPositionHidden];
-                else 
-                    [self showSunPosition:sunPostion.azimuth withAltitude:sunPostion.altitude];
-            }
-            else
-            {
-                if ([date compare:timeRiseSun] == NSOrderedAscending) 
-                    [self setSunPositionHidden];
-                else 
-                    [self showSunPosition:sunPostion.azimuth withAltitude:sunPostion.altitude];
-            }
-   
-        }
+    BOOL sunPositionHidden;
 
-    else if ((Sunrise) && (SunSet)) {
-        if ((([date compare:timeRiseSun]== NSOrderedAscending)||([date compare:timeSetSun]== NSOrderedDescending)) ) 
-            [self setSunPositionHidden];
-        
-        else
-            [self showSunPosition:sunPostion.azimuth withAltitude:sunPostion.altitude];
+    if ((!Sunrise)&&(!SunSet))                 // neither sunrise nor sunset
+    {
+            sunPositionHidden = (VHzS[2] < 0);
     }
+    else if ((!Sunrise)||(!SunSet))                                    // sunrise or sunset
+    {
+        if (!Sunrise)
+            sunPositionHidden = (date.timeIntervalSince1970 > timeSetSun.timeIntervalSince1970);
+        else
+            sunPositionHidden = (date.timeIntervalSince1970 < timeRiseSun.timeIntervalSince1970);
+        }
+    else  {
+        sunPositionHidden = (date.timeIntervalSince1970 < timeRiseSun.timeIntervalSince1970 || date.timeIntervalSince1970 > timeSetSun.timeIntervalSince1970);
+    }
+    positionEntity.pointSun = [self setPoint:sunPositionHidden andAzimuth:sunPostion.azimuth andAltitude:sunPostion.altitude];
 
 }
 
-- (void)setSunPositionHidden
-{
-    
-    positionEntity.pointSunX = centerAnnotationPoint;
-    positionEntity.pointSunY = centerAnnotationPoint;
-    
-}
-
-- (void)showSunPosition :(float)azimuth withAltitude:(float)altitude
-{
-    double angle =  azimuth - M_PI_2;
-    float x = centerAnnotationPoint + 100 *cos(angle)*cos(altitude);
-    float y = centerAnnotationPoint + 100 *sin(angle)*cos(altitude);
-    positionEntity.pointSunX = x;
-    positionEntity.pointSunY = y;
-
-}
 
 #pragma mark - set moon position 
 
@@ -381,14 +354,8 @@ BOOL SunSet = NO;
     MoonPosition *moonPosition = [self getMoonPositionWithDate:date andLatitude:lat andLongitude:lng ];
     [self setMoonPositionWithTime:moonPosition withDate:date];
     
-    if (MoonRise == YES)
-        [self computePointInCricle:Rise_azM withRiseOrSet:MoonRiseSelected];
-    else
-        [self setMoonRiseHidden];
-    if (MoonSet == YES)
-        [self computePointInCricle:Set_azM withRiseOrSet:MoonSetSelected];
-    else
-        [self setMoonSetHidden];
+    positionEntity.pointMoonRise = [self setPoint:!MoonRise andAzimuth:Rise_azM*DR andAltitude:0];
+    positionEntity.pointMoonSet = [self setPoint:!MoonSet andAzimuth:Set_azM*DR andAltitude:0];
     
 }
 
@@ -431,164 +398,27 @@ BOOL SunSet = NO;
 - (void)setMoonPositionWithTime:(MoonPosition *)moonPostion withDate:(NSDate *)date
 {
     
+    BOOL moonPositionHidden;
+    
     if ((!MoonRise)&&(!MoonSet))                 // neither sunrise nor sunset
     {
-        if (VHzM[2] < 0){
-            [self setMoonPositionHidden];
-        _todayHaveMoon = NO;
-        }
-        else if (VHzM[2] >= 0){
-            _todayHaveMoon = YES;
-            [self showMoonPosition:moonPostion.azimuth withAltitude:moonPostion.altitude];
-        }
+        moonPositionHidden = (VHzM[2] < 0);
     }
-    
     else if ((!MoonRise)||(!MoonSet))                                    // sunrise or sunset
     {
-        _todayHaveMoon = YES;
-        if (!MoonRise) {
-            if ([date compare:timeSetMoon]== NSOrderedDescending ) 
-                [self setMoonPositionHidden];
-            else
-                [self showMoonPosition:moonPostion.azimuth withAltitude:moonPostion.altitude];
-        }
-        else if(!MoonSet) {
-            if ([date compare:timeRiseMoon]== NSOrderedAscending) 
-                [self setMoonPositionHidden];
-            else
-                [self showMoonPosition:moonPostion.azimuth withAltitude:moonPostion.altitude];
-        }
+        if (!MoonRise)
+            moonPositionHidden = (date.timeIntervalSince1970 > timeSetMoon.timeIntervalSince1970);
+        else
+            moonPositionHidden = (date.timeIntervalSince1970 < timeRiseMoon.timeIntervalSince1970);
     }
-        
-    else if((MoonRise) && (MoonSet)){
-        _todayHaveMoon = YES;
-            if (timeRiseMoon.timeIntervalSince1970  > timeSetMoon.timeIntervalSince1970) {
-                if ( date.timeIntervalSince1970 < timeRiseMoon.timeIntervalSince1970 && date.timeIntervalSince1970 > timeSetMoon.timeIntervalSince1970 )
-                    [self setMoonPositionHidden];
-                else
-                    [self showMoonPosition:moonPostion.azimuth withAltitude:moonPostion.altitude];
-
-            }
-            else 
-                if (date.timeIntervalSince1970 < timeRiseMoon.timeIntervalSince1970 || date.timeIntervalSince1970 > timeSetMoon.timeIntervalSince1970 )
-                    [self setMoonPositionHidden];
-                else 
-                    [self showMoonPosition:moonPostion.azimuth withAltitude:moonPostion.altitude];
+    else  {
+        if (timeRiseMoon.timeIntervalSince1970  > timeSetMoon.timeIntervalSince1970)
+            moonPositionHidden =  ( date.timeIntervalSince1970 < timeRiseMoon.timeIntervalSince1970 && date.timeIntervalSince1970 > timeSetMoon.timeIntervalSince1970 );
+        else
+            moonPositionHidden = (date.timeIntervalSince1970 < timeRiseMoon.timeIntervalSince1970 || date.timeIntervalSince1970 > timeSetMoon.timeIntervalSince1970 );
     }
-    
-}
-
-- (void)setMoonPositionHidden
-{
-    
-    positionEntity.pointMoonX = centerAnnotationPoint;
-    positionEntity.pointMoonY = centerAnnotationPoint;
-    
-}
-
-- (void)showMoonPosition:(float)azimuth withAltitude:(float)altitude
-{
-
-    double angle =  azimuth - M_PI_2;
-    float x = centerAnnotationPoint + 100 *cos(angle)*cos(altitude);
-    float y = centerAnnotationPoint + 100 *sin(angle)*cos(altitude);
-    positionEntity.pointMoonX = x;
-    positionEntity.pointMoonY = y;
-    
-}
-
-
-#pragma mark - compute point in Cricle 
-
-- (void)computePointInCricle:(float)azumith withRiseOrSet:(int)riseOrSet
-{
-    
-        azumith = (azumith * M_PI )/ 180.0;
-        float a = 0.0;
-        if (0 <  azumith <= M_PI_2) {
-            a = tanf(M_PI_2 + azumith );
-        }
-        else if (M_PI_2 < azumith <= 3 * M_PI_2) {
-            a = tanf(azumith - M_PI_2);
-        }
-        
-        else{
-            a = tanf(azumith - 3 * M_PI_2);
-        }
-        
-        float b = centerAnnotationPoint - centerAnnotationPoint * a;
-        float indexA = 1 + a * a;
-        float indexB = 2 * a * b - 206 * a - 206 ;
-        float indexC = b * b - 206 * b + 11218;
-        float originX = [self giaiPhuongTrinhB2:indexA withIndexB:indexB withIndexC:indexC withAngle:azumith];
-        float originY = a * originX + b;
-        if (riseOrSet == MoonSetSelected) {
-            positionEntity.pointMoonSetX = originX;
-            positionEntity.pointMoonSetY = originY;
-        }
-        else if (riseOrSet == MoonRiseSelected){
-            positionEntity.pointMoonRiseX = originX;
-            positionEntity.pointMoonRiseY = originY;
-        }
-        else if (riseOrSet == SunSetSelected){
-            positionEntity.pointSunSetX = originX;
-            positionEntity.pointSunSetY = originY;
-        }
-        else if (riseOrSet == SunRiseSelected){
-            positionEntity.pointSunRiseX = originX;
-            positionEntity.pointSunRiseY = originY;
-        }
-    
-}
-
-- (float)giaiPhuongTrinhB2:(float )a withIndexB:(float)b withIndexC:(float )c withAngle:(float)angle
-{
-    
-    float x;
-    float delta = (b * b) - ( 4 * a * c );
-    float x1;
-    float x2;
-    x1 = (- b +  (sqrtf(delta))) / (2 * a);
-    x2 = (- b -  (sqrtf(delta))) / (2 * a);
-    if ((0 < angle && angle <= M_PI) ||( - 2 * M_PI < angle && angle < -M_PI)) {
-        x = MAX(x1, x2);
-    }
-    else {
-        x = MIN(x1, x2);
-    }
-    return x;
-    
-}
-
-- (void)setSunRiseHidden
-{
-    
-    positionEntity.pointSunRiseX = centerAnnotationPoint;
-    positionEntity.pointSunRiseY = centerAnnotationPoint;
-    
-}
-
-- (void)setSunSetHidden
-{
-    
-    positionEntity.pointSunSetX = centerAnnotationPoint;
-    positionEntity.pointSunSetY = centerAnnotationPoint;
-    
-}
-
-- (void)setMoonRiseHidden
-{
-    
-    positionEntity.pointMoonRiseX = centerAnnotationPoint;
-    positionEntity.pointMoonRiseY = centerAnnotationPoint;
-    
-}
-
-- (void)setMoonSetHidden
-{
-    
-    positionEntity.pointMoonSetX = centerAnnotationPoint;
-    positionEntity.pointMoonSetY = centerAnnotationPoint;
+    _todayHaveMoon = !moonPositionHidden;
+    positionEntity.pointMoon = [self setPoint:moonPositionHidden andAzimuth:moonPostion.azimuth andAltitude:moonPostion.altitude];
     
 }
 
@@ -1075,7 +905,5 @@ BOOL SunSet = NO;
     return [_dateFormatterConvert stringFromDate:date];
     
 }
-
-
 
 @end

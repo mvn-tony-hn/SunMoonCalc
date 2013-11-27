@@ -49,14 +49,14 @@
     CGContextSetStrokeColorWithColor(contextSunLight, [UIColor colorWithRed:1.0 green:0 blue:0 alpha:1.0].CGColor);
     CGContextSetLineWidth(contextSunLight, 3.0);
     CGContextMoveToPoint(contextSunLight, centerAnnotationPoint, centerAnnotationPoint);
-    CGContextAddLineToPoint(contextSunLight, position.pointSunX, position.pointSunY);
+    CGContextAddLineToPoint(contextSunLight, position.pointSun.x, position.pointSun.y);
     CGContextStrokePath(contextSunLight);
     
     CGContextRef contextMoonLight = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(contextMoonLight, [UIColor colorWithRed:102/255.0 green:153/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(contextMoonLight, 3.0);
     CGContextMoveToPoint(contextMoonLight, centerAnnotationPoint, centerAnnotationPoint);
-    CGContextAddLineToPoint(contextMoonLight, position.pointMoonX, position.pointMoonY);
+    CGContextAddLineToPoint(contextMoonLight, position.pointMoon.x, position.pointMoon.y);
     CGContextStrokePath(contextMoonLight);
     
     CGContextRef contextSunRise = UIGraphicsGetCurrentContext();
@@ -64,13 +64,13 @@
     CGContextSetLineWidth(contextSunRise, 3.0);
     CGContextSetLineDash(contextSunRise, 0.0f, kDashedLinesLength, 2.0f);
     CGContextMoveToPoint(contextSunRise, centerAnnotationPoint, centerAnnotationPoint);
-    CGContextAddLineToPoint(contextSunRise, position.pointSunRiseX, position.pointSunRiseY);
+    CGContextAddLineToPoint(contextSunRise, position.pointSunRise.x, position.pointSunRise.y);
     CGContextStrokePath(contextSunRise);
     
     CGContextRef contextSunSet = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(contextSunSet, [UIColor colorWithRed:1.0 green:0 blue:0 alpha:1.0].CGColor);
     CGContextSetLineWidth(contextSunSet, 3.0);
-    CGContextMoveToPoint(contextSunSet, position.pointSunSetX, position.pointSunSetY);
+    CGContextMoveToPoint(contextSunSet, position.pointSunSet.x, position.pointSunSet.y);
     CGContextAddLineToPoint(contextSunSet, centerAnnotationPoint, centerAnnotationPoint);
     CGContextStrokePath(contextSunSet);
     
@@ -78,46 +78,48 @@
     CGContextSetStrokeColorWithColor(contextMoonRise, [UIColor colorWithRed:51/255.0 green:153/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(contextMoonRise, 3.0);
     CGContextMoveToPoint(contextMoonRise, centerAnnotationPoint, centerAnnotationPoint);
-    CGContextAddLineToPoint(contextMoonRise, position.pointMoonRiseX, position.pointMoonRiseY);
+    CGContextAddLineToPoint(contextMoonRise, position.pointMoonRise.x, position.pointMoonRise.y);
     CGContextStrokePath(contextMoonRise);
     
     CGContextRef contextMoonSet = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(contextMoonSet, [UIColor colorWithRed:102/255.0 green:51/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(contextMoonSet, 3.0);
-    CGContextMoveToPoint(contextMoonSet, position.pointMoonSetX, position.pointMoonSetY);
+    CGContextMoveToPoint(contextMoonSet, position.pointMoonSet.x, position.pointMoonSet.y);
     CGContextAddLineToPoint(contextMoonSet, centerAnnotationPoint, centerAnnotationPoint);
     CGContextStrokePath(contextMoonSet);
 }
 
 - (void)initContentView
 {
+    CGSize imageSize = CGSizeMake(20, 20);
+    
     UIImage *sunRiseImage = [UIImage imageNamed:@"icon_sun_rise.png"];
-    sunRiseImageView = [[UIImageView alloc] initWithFrame:CGRectMake(position.pointSunRiseX, position.pointSunRiseY, 20, 20)];
+    sunRiseImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.pointSunRise.x, position.pointSunRise.y, imageSize)];
     sunRiseImageView.image = sunRiseImage;
     [self addSubview:sunRiseImageView];
     
     UIImage *sunSetImage = [UIImage imageNamed:@"icon_sun_set.png"];
-    sunSetImageView = [[UIImageView alloc] initWithFrame:CGRectMake(position.pointSunSetX, position.pointSunSetY, 20, 20)];
+    sunSetImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.pointSunSet.x, position.pointSunSet.y, imageSize)];
     sunSetImageView.image = sunSetImage;
     [self addSubview:sunSetImageView];
     
     UIImage *sunPosImage = [UIImage imageNamed:@"icon_current_sun.png"];
-    sunPosImageView = [[UIImageView alloc] initWithFrame:CGRectMake(position.pointSunX, position.pointSunY, 20, 20)];
+    sunPosImageView = [[UIImageView alloc] initWithFrame:CGRectMake(position.pointSun.x, position.pointSun.y, 20, 20)];
     sunPosImageView.image = sunPosImage;
     [self addSubview:sunPosImageView];
     
     UIImage *moonRiseImage = [UIImage imageNamed:@"icon_moon_rise.png"];
-    moonRiseImageView = [[UIImageView alloc] initWithFrame:CGRectMake(position.pointMoonRiseX, position.pointMoonRiseY, 20, 20)];
+    moonRiseImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.pointMoonRise.x, position.pointMoonRise.y, imageSize)];
     moonRiseImageView.image = moonRiseImage;
     [self addSubview:moonRiseImageView];
     
     UIImage *moonSetImage = [UIImage imageNamed:@"icon_moon_set.png"];
-    moonSetImageView = [[UIImageView alloc] initWithFrame:CGRectMake(position.pointMoonSetX, position.pointMoonSetY, 20, 20)];
+    moonSetImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.pointMoonSet.x, position.pointMoonSet.y, imageSize)];
     moonSetImageView.image = moonSetImage;
     [self addSubview:moonSetImageView];
     
     UIImage *moonPosImage = [UIImage imageNamed:@"icon_current_moon.png"];
-    moonPosImageView = [[UIImageView alloc] initWithFrame:CGRectMake(position.pointMoonX, position.pointMoonY , 20, 20)];
+    moonPosImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.pointMoon.x, position.pointMoon.y, imageSize)];
     moonPosImageView.image = moonPosImage;
     [self addSubview:moonPosImageView];
     
@@ -128,105 +130,93 @@
 - (void)reloadAnnotation
 {
     CGPoint newCenter;
+    CGPoint pointCenter = CGPointMake(centerAnnotationPoint, centerAnnotationPoint);
     
-    if (position.pointMoonRiseX == centerAnnotationPoint && position.pointMoonRiseY == centerAnnotationPoint) {
+    if (CGPointEqualToPoint(position.pointMoonRise, pointCenter)) {
         moonRiseImageView.hidden = YES;
     }
     else {
         moonRiseImageView.hidden = NO;
-        newCenter.x = position.pointMoonRiseX;
-        newCenter.y = position.pointMoonRiseY;
+        newCenter = position.pointMoonRise;
         moonRiseImageView.center = newCenter;
     }
-    if (position.pointMoonSetX == centerAnnotationPoint && position.pointMoonSetY == centerAnnotationPoint) {
+    if (CGPointEqualToPoint(position.pointMoonSet, pointCenter)) {
         moonSetImageView.hidden = YES;
     }
     else {
         moonSetImageView.hidden = NO;
-        newCenter.x = position.pointMoonSetX;
-        newCenter.y = position.pointMoonSetY;
+        newCenter = position.pointMoonSet;
         moonSetImageView.center = newCenter;
     }
     
-    if (position.pointMoonX == centerAnnotationPoint && position.pointMoonY == centerAnnotationPoint) {
+    if (CGPointEqualToPoint(position.pointMoon, pointCenter)) {
         moonPosImageView.hidden = YES;
     }
     else {
         moonPosImageView.hidden = NO;
-        newCenter.x = position.pointMoonX ;
-        newCenter.y = position.pointMoonY ;
+        newCenter = position.pointMoon ;
         moonPosImageView.center = newCenter;
     }
     
     // set up for Sun
     if (self.sunMoonAnnotation.isHiddenSunRise == YES) {
-        position.pointSunRiseX = centerAnnotationPoint;
-        position.pointSunRiseY = centerAnnotationPoint;
+        position.pointSunRise = pointCenter;
     }
-    if (position.pointSunRiseX == centerAnnotationPoint && position.pointSunRiseY == centerAnnotationPoint) {
+    if (CGPointEqualToPoint(position.pointSunRise, pointCenter)) {
         sunRiseImageView.hidden = YES;
     }
     else {
         sunRiseImageView.hidden = NO;
-        newCenter.x = position.pointSunRiseX;
-        newCenter.y = position.pointSunRiseY;
+        newCenter = position.pointSunRise;
         sunRiseImageView.center = newCenter;
     }
     
     if (self.sunMoonAnnotation.isHiddenSunSet == YES) {
-        position.pointSunSetX = centerAnnotationPoint;
-        position.pointSunSetY = centerAnnotationPoint;
+        position.pointSunSet = pointCenter;
     }
-    if (position.pointSunSetX == centerAnnotationPoint && position.pointSunSetY == centerAnnotationPoint) {
+    if (CGPointEqualToPoint(position.pointSunSet, pointCenter)) {
         sunSetImageView.hidden = YES;
     }
     else {
         sunSetImageView.hidden = NO;
-        newCenter.x = position.pointSunSetX;
-        newCenter.y = position.pointSunSetY;
+        newCenter = position.pointSunSet;
         sunSetImageView.center = newCenter;
     }
     
     if (self.sunMoonAnnotation.isHiddenSunPos == YES) {
-        position.pointSunX = centerAnnotationPoint;
-        position.pointSunY = centerAnnotationPoint;
+        position.pointSun = pointCenter;
     }
-    if (position.pointSunX == centerAnnotationPoint && position.pointSunY == centerAnnotationPoint) {
+    if (CGPointEqualToPoint(position.pointSun, pointCenter)) {
         sunPosImageView.hidden = YES;
     }
     else {
         sunPosImageView.hidden = NO;
-        newCenter.x = position.pointSunX;
-        newCenter.y = position.pointSunY;
+        newCenter = position.pointSun;
         sunPosImageView.center = newCenter;
     }
     
     //set up for moon
     if (self.sunMoonAnnotation.isHiddenMoonRise == YES) {
-        position.pointMoonRiseX = centerAnnotationPoint;
-        position.pointMoonRiseY = centerAnnotationPoint;
+        position.pointMoonRise = pointCenter;
     }
-    if (position.pointMoonRiseX == centerAnnotationPoint && position.pointMoonRiseY == centerAnnotationPoint) {
+    if (CGPointEqualToPoint(position.pointMoonRise, pointCenter)) {
         moonRiseImageView.hidden = YES;
     }
     else {
         moonRiseImageView.hidden = NO;
-        newCenter.x = position.pointMoonRiseX;
-        newCenter.y = position.pointMoonRiseY;
+        newCenter = position.pointMoonRise;
         moonRiseImageView.center = newCenter;
     }
     
     if (self.sunMoonAnnotation.isHiddenMoonSet == YES) {
-        position.pointMoonSetX = centerAnnotationPoint;
-        position.pointMoonSetY = centerAnnotationPoint;
+        position.pointMoonSet = pointCenter;
     }
-    if (position.pointMoonSetX == centerAnnotationPoint && position.pointMoonSetY == centerAnnotationPoint ) {
+    if (CGPointEqualToPoint(position.pointMoonSet, pointCenter) ) {
         moonSetImageView.hidden = YES;
     }
     else {
         moonSetImageView.hidden = NO;
-        newCenter.x = position.pointMoonSetX;
-        newCenter.y = position.pointMoonSetY;
+        newCenter = position.pointMoonSet;
         moonSetImageView.center = newCenter;
     }
     
