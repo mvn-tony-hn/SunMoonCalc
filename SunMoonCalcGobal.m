@@ -863,7 +863,6 @@ BOOL SunSet = NO;
     timeRiseSun = [self getTimesFromHour:Rise_timeS[0] andMinute:Rise_timeS[1] andZone:zone];
     timeSetSun = [self getTimesFromHour:Set_timeS[0] andMinute:Set_timeS[1] andZone:zone];
     [self setSun:date withLatitude:lat withLongitude:lng];
-    NSLog(@"date : %@, lat : %f, lng : %f",date,lat,lng);
     
 }
 

@@ -39,12 +39,6 @@
                                                      name:kPDSunMoonDateChangedNotification
                                                    object:nil];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(didUpdateDate:)
-                                                     name:kPDSunMoonTimeChangedNotification
-                                                   object:nil];
-        
-        
         sunMoonCalc = [[SunMoonCalcGobal alloc] init];
         [sunMoonCalc computeMoonriseAndMoonSet:date withLatitude:lat withLongitude:lng];
         [sunMoonCalc computeSunriseAndSunSet:date withLatitude:lat withLongitude:lng];
@@ -62,7 +56,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDSunMoonDateChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDSunMoonTimeChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPDUpdateSunMoonAnnotationNotification object:nil];
 
     
