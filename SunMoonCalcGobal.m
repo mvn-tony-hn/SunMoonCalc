@@ -87,6 +87,8 @@ BOOL SunSet = NO;
     return DR * 23.4397;//obliquity(do nghieng) of the Earth
     
 }
+
+
 - (double)getDeclinationWithLongitude:(double)l andLatitude:(double)b {
     
     return asin(sin(b) * cos(self.e) + cos(b) * sin(self.e) *sin(l));
@@ -104,11 +106,13 @@ BOOL SunSet = NO;
     return 60*60*24 ;
     
 }
+
 - (double)J1970 {
     
     return 2440588;
     
 }
+
 - (double)J2000 {
     
     return 2451545;
@@ -156,11 +160,13 @@ BOOL SunSet = NO;
     return asin(sin(phi)*sin(dec) + cos(phi)*cos(dec)*cos(H));
     
 }
+
 - (double)J0 {
     
     return 0.0009;
     
 }
+
 - (NSDate *)fromJulian:(double)j {
     
     double timeInterval = (j+ 0.5 - self.J1970) * [self secondInDay];
@@ -272,6 +278,7 @@ BOOL SunSet = NO;
     [self getSunPositionWithDate:date andLatitude:lat andLongitude:lng];
     
     if (Sunrise == YES)
+//        self showMoonPosition:<#(float)#> withAltitude:<#(float)#>
         [self computePointInCricle:Rise_azS withRiseOrSet:SunRiseSelected];
     else
         [self setSunRiseHidden];
@@ -337,7 +344,6 @@ BOOL SunSet = NO;
             }
    
         }
-    
 
     else if ((Sunrise) && (SunSet)) {
         if ((([date compare:timeRiseSun]== NSOrderedAscending)||([date compare:timeSetSun]== NSOrderedDescending)) ) 
@@ -857,6 +863,7 @@ BOOL SunSet = NO;
     timeRiseSun = [self getTimesFromHour:Rise_timeS[0] andMinute:Rise_timeS[1] andZone:zone];
     timeSetSun = [self getTimesFromHour:Set_timeS[0] andMinute:Set_timeS[1] andZone:zone];
     [self setSun:date withLatitude:lat withLongitude:lng];
+    NSLog(@"date : %@, lat : %f, lng : %f",date,lat,lng);
     
 }
 
