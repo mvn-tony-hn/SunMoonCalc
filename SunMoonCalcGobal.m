@@ -328,21 +328,23 @@ BOOL SunSet = NO;
     if ((!MoonRise)&&(!MoonSet))                 // neither sunrise nor sunset
     {
         moonPositionHidden = (VHzM[2] < 0);
+        _todayHaveMoon = !moonPositionHidden;
     }
     else if ((!MoonRise)||(!MoonSet))                                    // sunrise or sunset
     {
+        _todayHaveMoon = YES;
         if (!MoonRise)
             moonPositionHidden = (date.timeIntervalSince1970 > timeSetMoon.timeIntervalSince1970);
         else
             moonPositionHidden = (date.timeIntervalSince1970 < timeRiseMoon.timeIntervalSince1970);
     }
     else  {
+        _todayHaveMoon = YES;
         if (timeRiseMoon.timeIntervalSince1970  > timeSetMoon.timeIntervalSince1970)
             moonPositionHidden =  ( date.timeIntervalSince1970 < timeRiseMoon.timeIntervalSince1970 && date.timeIntervalSince1970 > timeSetMoon.timeIntervalSince1970 );
         else
             moonPositionHidden = (date.timeIntervalSince1970 < timeRiseMoon.timeIntervalSince1970 || date.timeIntervalSince1970 > timeSetMoon.timeIntervalSince1970 );
     }
-    _todayHaveMoon = !moonPositionHidden;
     positionEntity.pointMoon = [self setPoint:moonPositionHidden andAzimuth:moonPostion.azimuth andAltitude:moonPostion.altitude];
 }
 
