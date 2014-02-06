@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "PositionEntity.h"
 #import "SunPosition.h"
+#import "MoonPosition.h"
+
 #define centerAnnotationPoint   103
 #define kCenterPoint            CGPointMake(103, 103);
 @interface SunMoonCalcGobal : NSObject {
@@ -31,6 +33,8 @@
 - (void)computeMoonriseAndMoonSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng;
 - (void)computeSunriseAndSunSet:(NSDate *)date withLatitude:(double)lat withLongitude:(double)lng;
 - (NSDictionary*)getSunTimesWithDate:(NSDate*)date andLatitude:(double)lat andLogitude:(double)lng ;
+- (SunPosition *)getSunPositionWithDate:(NSDate*)date andLatitude:(double)lat andLongitude:(double)lng ;
+- (MoonPosition *)getMoonPositionWithDate:(NSDate*)date andLatitude:(double)lat andLongitude:(double)lng ;
 - (double)getMoonFraction:(NSDate *)date;
 
 

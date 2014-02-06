@@ -6,10 +6,8 @@
 //  Copyright (c) 2013 Duc Long. All rights reserved.
 //
 #import "SunCoordinate.h"
-#import "SunPosition.h"
 #import "SunMoonCalcGobal.h"
 #import "MoonCoordinate.h"
-#import "MoonPosition.h"
 
 double DR = M_PI/180.0;
 double K1 = 15 * M_PI/180.0 * 1.0027379 ;
