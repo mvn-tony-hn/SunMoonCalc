@@ -90,7 +90,7 @@ BOOL SunSet = NO;
     return 2451545;
 }
 
-- (void)toJulianDate
+- (void)getJulianDate
 {
     NSString *JulianString = @"1970-01-01 00:00:00";
     _julianDate = [_dateFormatter dateFromString:JulianString];
@@ -98,7 +98,7 @@ BOOL SunSet = NO;
 
 - (double) toJulian:(NSDate*)date {
     if (!_julianDate) {
-        [self toJulianDate];
+        [self getJulianDate];
     }
     NSTimeInterval differentBetweenDates = [date timeIntervalSinceDate:_julianDate];
     return differentBetweenDates/ self.secondInDay - 0.5 + self.J1970;
@@ -126,7 +126,10 @@ BOOL SunSet = NO;
 
 - (NSDate *)fromJulian:(double)j {
     double timeInterval = (j+ 0.5 - self.J1970) * [self secondInDay];
-    NSDate * date = [[NSDate alloc]initWithTimeIntervalSince1970:timeInterval];
+    if (!_julianDate) {
+        [self getJulianDate];
+    }
+    NSDate * date = [NSDate dateWithTimeInterval:timeInterval sinceDate:_julianDate];
     return date;
 }
 
@@ -178,7 +181,7 @@ BOOL SunSet = NO;
 }
 
 # pragma mark - get Sun Time
-- (NSDictionary *)getSunTimesWithDate:(NSDate*)date andLatitude:(double)lat andLogitude:(double)lng {
+- (NSDictionary *)getSunTimesWithDate:(NSDate *)date andLatitude:(double)lat andLogitude:(double)lng {
     
     double lw = DR * -lng;
     double phi = DR * lat;
