@@ -49,14 +49,14 @@
     CGContextSetStrokeColorWithColor(contextSunLight, [UIColor colorWithRed:1.0 green:0 blue:0 alpha:1.0].CGColor);
     CGContextSetLineWidth(contextSunLight, 3.0);
     CGContextMoveToPoint(contextSunLight, centerAnnotationPoint, centerAnnotationPoint);
-    CGContextAddLineToPoint(contextSunLight, position.pointSun.x, position.pointSun.y);
+    CGContextAddLineToPoint(contextSunLight, position.sunPoint.pointNow.x, position.sunPoint.pointNow.y);
     CGContextStrokePath(contextSunLight);
     
     CGContextRef contextMoonLight = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(contextMoonLight, [UIColor colorWithRed:102/255.0 green:153/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(contextMoonLight, 3.0);
     CGContextMoveToPoint(contextMoonLight, centerAnnotationPoint, centerAnnotationPoint);
-    CGContextAddLineToPoint(contextMoonLight, position.pointMoon.x, position.pointMoon.y);
+    CGContextAddLineToPoint(contextMoonLight, position.moonPoint.pointNow.x, position.moonPoint.pointNow.y);
     CGContextStrokePath(contextMoonLight);
     
     CGContextRef contextSunRise = UIGraphicsGetCurrentContext();
@@ -64,13 +64,13 @@
     CGContextSetLineWidth(contextSunRise, 3.0);
     CGContextSetLineDash(contextSunRise, 0.0f, kDashedLinesLength, 2.0f);
     CGContextMoveToPoint(contextSunRise, centerAnnotationPoint, centerAnnotationPoint);
-    CGContextAddLineToPoint(contextSunRise, position.pointSunRise.x, position.pointSunRise.y);
+    CGContextAddLineToPoint(contextSunRise, position.sunPoint.pointRise.x, position.sunPoint.pointRise.y);
     CGContextStrokePath(contextSunRise);
     
     CGContextRef contextSunSet = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(contextSunSet, [UIColor colorWithRed:1.0 green:0 blue:0 alpha:1.0].CGColor);
     CGContextSetLineWidth(contextSunSet, 3.0);
-    CGContextMoveToPoint(contextSunSet, position.pointSunSet.x, position.pointSunSet.y);
+    CGContextMoveToPoint(contextSunSet, position.sunPoint.pointSet.x, position.sunPoint.pointSet.y);
     CGContextAddLineToPoint(contextSunSet, centerAnnotationPoint, centerAnnotationPoint);
     CGContextStrokePath(contextSunSet);
     
@@ -78,13 +78,13 @@
     CGContextSetStrokeColorWithColor(contextMoonRise, [UIColor colorWithRed:51/255.0 green:153/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(contextMoonRise, 3.0);
     CGContextMoveToPoint(contextMoonRise, centerAnnotationPoint, centerAnnotationPoint);
-    CGContextAddLineToPoint(contextMoonRise, position.pointMoonRise.x, position.pointMoonRise.y);
+    CGContextAddLineToPoint(contextMoonRise, position.moonPoint.pointRise.x, position.moonPoint.pointRise.y);
     CGContextStrokePath(contextMoonRise);
     
     CGContextRef contextMoonSet = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(contextMoonSet, [UIColor colorWithRed:102/255.0 green:51/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(contextMoonSet, 3.0);
-    CGContextMoveToPoint(contextMoonSet, position.pointMoonSet.x, position.pointMoonSet.y);
+    CGContextMoveToPoint(contextMoonSet, position.moonPoint.pointSet.x, position.moonPoint.pointSet.y);
     CGContextAddLineToPoint(contextMoonSet, centerAnnotationPoint, centerAnnotationPoint);
     CGContextStrokePath(contextMoonSet);
 }
@@ -94,32 +94,32 @@
     CGSize imageSize = CGSizeMake(20, 20);
     
     UIImage *sunRiseImage = [UIImage imageNamed:@"icon_sun_rise.png"];
-    sunRiseImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.pointSunRise.x, position.pointSunRise.y, imageSize)];
+    sunRiseImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.sunPoint.pointRise.x, position.sunPoint.pointRise.y, imageSize)];
     sunRiseImageView.image = sunRiseImage;
     [self addSubview:sunRiseImageView];
     
     UIImage *sunSetImage = [UIImage imageNamed:@"icon_sun_set.png"];
-    sunSetImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.pointSunSet.x, position.pointSunSet.y, imageSize)];
+    sunSetImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.sunPoint.pointSet.x, position.sunPoint.pointSet.y, imageSize)];
     sunSetImageView.image = sunSetImage;
     [self addSubview:sunSetImageView];
     
     UIImage *sunPosImage = [UIImage imageNamed:@"icon_current_sun.png"];
-    sunPosImageView = [[UIImageView alloc] initWithFrame:CGRectMake(position.pointSun.x, position.pointSun.y, 20, 20)];
+    sunPosImageView = [[UIImageView alloc] initWithFrame:CGRectMake(position.sunPoint.pointNow.x, position.sunPoint.pointNow.y, 20, 20)];
     sunPosImageView.image = sunPosImage;
     [self addSubview:sunPosImageView];
     
     UIImage *moonRiseImage = [UIImage imageNamed:@"icon_moon_rise.png"];
-    moonRiseImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.pointMoonRise.x, position.pointMoonRise.y, imageSize)];
+    moonRiseImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.moonPoint.pointRise.x, position.moonPoint.pointRise.y, imageSize)];
     moonRiseImageView.image = moonRiseImage;
     [self addSubview:moonRiseImageView];
     
     UIImage *moonSetImage = [UIImage imageNamed:@"icon_moon_set.png"];
-    moonSetImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.pointMoonSet.x, position.pointMoonSet.y, imageSize)];
+    moonSetImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.moonPoint.pointSet.x, position.moonPoint.pointSet.y, imageSize)];
     moonSetImageView.image = moonSetImage;
     [self addSubview:moonSetImageView];
     
     UIImage *moonPosImage = [UIImage imageNamed:@"icon_current_moon.png"];
-    moonPosImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.pointMoon.x, position.pointMoon.y, imageSize)];
+    moonPosImageView = [[UIImageView alloc] initWithFrame:CGRectMakeWithSize(position.moonPoint.pointNow.x, position.moonPoint.pointNow.y, imageSize)];
     moonPosImageView.image = moonPosImage;
     [self addSubview:moonPosImageView];
     
@@ -132,91 +132,91 @@
     CGPoint newCenter;
     CGPoint pointCenter = CGPointMake(centerAnnotationPoint, centerAnnotationPoint);
     
-    if (CGPointEqualToPoint(position.pointMoonRise, pointCenter)) {
+    if (CGPointEqualToPoint(position.moonPoint.pointRise, pointCenter)) {
         moonRiseImageView.hidden = YES;
     }
     else {
         moonRiseImageView.hidden = NO;
-        newCenter = position.pointMoonRise;
+        newCenter = position.moonPoint.pointRise;
         moonRiseImageView.center = newCenter;
     }
-    if (CGPointEqualToPoint(position.pointMoonSet, pointCenter)) {
+    if (CGPointEqualToPoint(position.moonPoint.pointSet, pointCenter)) {
         moonSetImageView.hidden = YES;
     }
     else {
         moonSetImageView.hidden = NO;
-        newCenter = position.pointMoonSet;
+        newCenter = position.moonPoint.pointSet;
         moonSetImageView.center = newCenter;
     }
     
-    if (CGPointEqualToPoint(position.pointMoon, pointCenter)) {
+    if (CGPointEqualToPoint(position.moonPoint.pointNow, pointCenter)) {
         moonPosImageView.hidden = YES;
     }
     else {
         moonPosImageView.hidden = NO;
-        newCenter = position.pointMoon ;
+        newCenter = position.moonPoint.pointNow ;
         moonPosImageView.center = newCenter;
     }
     
     // set up for Sun
     if (self.sunMoonAnnotation.isHiddenSunRise == YES) {
-        position.pointSunRise = pointCenter;
+        position.sunPoint.pointRise = pointCenter;
     }
-    if (CGPointEqualToPoint(position.pointSunRise, pointCenter)) {
+    if (CGPointEqualToPoint(position.sunPoint.pointRise, pointCenter)) {
         sunRiseImageView.hidden = YES;
     }
     else {
         sunRiseImageView.hidden = NO;
-        newCenter = position.pointSunRise;
+        newCenter = position.sunPoint.pointRise;
         sunRiseImageView.center = newCenter;
     }
     
     if (self.sunMoonAnnotation.isHiddenSunSet == YES) {
-        position.pointSunSet = pointCenter;
+        position.sunPoint.pointSet = pointCenter;
     }
-    if (CGPointEqualToPoint(position.pointSunSet, pointCenter)) {
+    if (CGPointEqualToPoint(position.sunPoint.pointSet, pointCenter)) {
         sunSetImageView.hidden = YES;
     }
     else {
         sunSetImageView.hidden = NO;
-        newCenter = position.pointSunSet;
+        newCenter = position.sunPoint.pointSet;
         sunSetImageView.center = newCenter;
     }
     
     if (self.sunMoonAnnotation.isHiddenSunPos == YES) {
-        position.pointSun = pointCenter;
+        position.sunPoint.pointNow = pointCenter;
     }
-    if (CGPointEqualToPoint(position.pointSun, pointCenter)) {
+    if (CGPointEqualToPoint(position.sunPoint.pointNow, pointCenter)) {
         sunPosImageView.hidden = YES;
     }
     else {
         sunPosImageView.hidden = NO;
-        newCenter = position.pointSun;
+        newCenter = position.sunPoint.pointNow;
         sunPosImageView.center = newCenter;
     }
     
     //set up for moon
     if (self.sunMoonAnnotation.isHiddenMoonRise == YES) {
-        position.pointMoonRise = pointCenter;
+        position.sunPoint.pointRise = pointCenter;
     }
-    if (CGPointEqualToPoint(position.pointMoonRise, pointCenter)) {
+    if (CGPointEqualToPoint(position.sunPoint.pointRise, pointCenter)) {
         moonRiseImageView.hidden = YES;
     }
     else {
         moonRiseImageView.hidden = NO;
-        newCenter = position.pointMoonRise;
+        newCenter = position.sunPoint.pointRise;
         moonRiseImageView.center = newCenter;
     }
     
     if (self.sunMoonAnnotation.isHiddenMoonSet == YES) {
-        position.pointMoonSet = pointCenter;
+        position.sunPoint.pointSet = pointCenter;
     }
-    if (CGPointEqualToPoint(position.pointMoonSet, pointCenter) ) {
+    if (CGPointEqualToPoint(position.sunPoint.pointSet, pointCenter) ) {
         moonSetImageView.hidden = YES;
     }
     else {
         moonSetImageView.hidden = NO;
-        newCenter = position.pointMoonSet;
+        newCenter = position.sunPoint.pointSet;
         moonSetImageView.center = newCenter;
     }
     

@@ -9,7 +9,9 @@
 #import "SunPosition.h"
 
 @implementation SunPosition
+
 @synthesize azimuth=_azimuth, altitude=_altitude;
+
 -(id) initWithAzimuth:(double)azimuth andAltitude:(double)altitude {
     self = [super init];
     if(self) {
@@ -18,4 +20,5 @@
     }
     return self;
 }
+
 @end

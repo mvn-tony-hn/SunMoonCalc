@@ -16,4 +16,5 @@
 - (id)initWithDeclination:(double)d andRightAscension:(double)r;
 @property double declination;
 @property double rightAscension;
+
 @end

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "PositionEntity.h"
 #import "Globals.h"
-#import "SunMoonCalcGobal.h"
+#import "SunMoonCalcGlobal.h"
 #import "SunMoonAnnotation.h"
 
 #define kPDSetUserTrackingModeNoneNotification       @"kPDSetUserTrackingModeNoneNotification"

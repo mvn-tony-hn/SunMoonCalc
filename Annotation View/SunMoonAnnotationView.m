@@ -39,7 +39,7 @@
                                                      name:kPDSunMoonDateChangedNotification
                                                    object:nil];
         
-        sunMoonCalc = [[SunMoonCalcGobal alloc] init];
+        sunMoonCalc = [[SunMoonCalcGlobal alloc] init];
         [sunMoonCalc computeMoonriseAndMoonSet:date withLatitude:lat withLongitude:lng];
         [sunMoonCalc computeSunriseAndSunSet:date withLatitude:lat withLongitude:lng];
         
@@ -92,7 +92,5 @@
     _sunmoonView.position = position;
     [_sunmoonView reloadAnnotation];
 }
-
-
 
 @end

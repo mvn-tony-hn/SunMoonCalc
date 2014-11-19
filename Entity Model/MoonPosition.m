@@ -10,6 +10,7 @@
 
 @implementation MoonPosition
 @synthesize azimuth = _azimuth, altitude=_altitude, distance=_distance;
+
 - (id)initWithAzimuth:(double)azimuth andAltitude:(double)altitude andDistance:(double)distance {
     if(self = [super init]) {
         _azimuth = azimuth;
@@ -18,4 +19,5 @@
     }
     return self;
 }
+
 @end
