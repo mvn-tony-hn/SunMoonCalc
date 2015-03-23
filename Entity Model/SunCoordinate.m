@@ -9,7 +9,6 @@
 #import "SunCoordinate.h"
 
 @implementation SunCoordinate
-
 @synthesize declination=_declination, rightAscension=_rightAscension;
 -(id) initWithDeclination:(double)d andRightAscension:(double)r {
     self = [super init];
@@ -19,5 +18,4 @@
     }
     return self;
 }
-
 @end

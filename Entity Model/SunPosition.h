@@ -17,5 +17,4 @@
 @property double altitude;
 
 - (id) initWithAzimuth:(double)azimuth andAltitude:(double)altitude;
-
 @end

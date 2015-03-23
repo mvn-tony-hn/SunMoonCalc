@@ -7,11 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PDSunMoonPoint.h"
 
 @interface PositionEntity : NSObject
+{
 
-@property (strong, nonatomic) PDSunMoonPoint *sunPoint;
-@property (strong, nonatomic) PDSunMoonPoint *moonPoint;
+}
+
+@property CGPoint pointMoonRise;
+@property CGPoint pointMoonSet;
+@property CGPoint pointMoon;
+@property CGPoint pointSunRise;
+@property CGPoint pointSunSet;
+@property CGPoint pointSun;
 
 @end
