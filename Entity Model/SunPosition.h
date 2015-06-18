@@ -1,9 +1,8 @@
 //
 //  SunPosition.h
-//  GraduateProject
 //
-//  Created by Nguyen Dinh Chinh on 3/16/13.
-//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//  Created by TungNT (Tony) on 3/23/13.
+//  Copyright (c) 2013 __Lifetimetech__. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
