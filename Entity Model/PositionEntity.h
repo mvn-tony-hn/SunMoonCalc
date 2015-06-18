@@ -2,8 +2,8 @@
 //  PositionEntity.h
 //  MoonAndSunCalc
 //
-//  Created by Duc Long on 4/10/13.
-//  Copyright (c) 2013 Duc Long. All rights reserved.
+//  Created by TungNT (Tony) on 3/23/13.
+//  Copyright (c) 2013 __Lifetimetech__. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
