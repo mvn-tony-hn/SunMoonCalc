@@ -1,9 +1,8 @@
 //
 //  SunMoonAnnotationView.h
-//  MoonAndSunCalc
 //
-//  Created by TungNT2 on 5/16/13.
-// 
+//  Created by TungNT (Tony) on 3/23/13.
+//  Copyright (c) 2013 __Lifetimetech__. All rights reserved.
 //
 
 #import <MapKit/MapKit.h>
